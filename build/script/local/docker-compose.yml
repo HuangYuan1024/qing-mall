@@ -1,0 +1,182 @@
+# build/scripts/local/docker-compose.yml
+
+version: "3.8"
+
+services:
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:9.1
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: qing
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../../docker/mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      app-network:
+        aliases:
+          - mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass redis123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      app-network:
+        aliases:
+          - redis
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      app-network:
+        aliases:
+          - minio
+
+  # Nacos 配置中心
+  nacos:
+    image: nacos/nacos-server:v3.0.3
+    container_name: nacos
+    restart: unless-stopped
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_DB_NAME=nacos_config
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root
+      # 修改这里：添加 allowPublicKeyRetrieval 和 useSSL 参数（MySQL8.0+版本必做）
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      - NACOS_AUTH_TOKEN=ewoJIm5hbWUiOiAibG92ZV9tb3ZpZV90b2tlbiIsCgkia2V5IjogInNlY3JldF9rZXlfZm9yX2F1dGhfdG9rZW5fZW5jb2RlZF93aXRoX2Jhc2U2NCIKfQ==
+      - NACOS_AUTH_IDENTITY_KEY=qing_key
+      - NACOS_AUTH_IDENTITY_VALUE=qing_value
+      - NACOS_AUTH_ENABLED=false
+      - NACOS_AUTH_ADMIN_ENABLED=false
+      - NACOS_AUTH_CONSOLE_ENABLED=false
+      - NACOS_AUTH_CACHING_ENABLED=false
+
+      # 统一认证配置 - 完全关闭所有认证
+      - NACOS_AUTH_ENABLE=false
+      - NACOS_AUTH_IDENTITY_ENABLE=false
+      - NACOS_AUTH_CACHE_ENABLE=false
+      - NACOS_AUTH_SYSTEM_TYPE=nacos
+
+      # 兼容性配置
+      - NACOS_CORE_AUTH_ENABLED=false
+      - NACOS_CORE_AUTH_SERVER_IDENTITY_KEY=qing_key
+      - NACOS_CORE_AUTH_SERVER_IDENTITY_VALUE=qing_value
+      - NACOS_CORE_AUTH_PLUGIN_NACOS_TOKEN_SECRET_KEY=SecretKey012345678901234567890123456789
+
+      # 控制台配置
+      - NACOS_CORE_AUTH_CONSOLE_ENABLED=false
+      - NACOS_CORE_AUTH_ADMIN_ENABLED=false
+
+      # API 兼容性
+      - NACOS_CORE_API_COMPATIBILITY_CLIENT_ENABLED=true
+      - NACOS_CORE_API_COMPATIBILITY_CONSOLE_ENABLED=true
+
+      # 新增绑定地址配置
+      - PREFER_HOST_MODE=hostname
+      - PREFER_HOST_IP=0.0.0.0
+    ports:
+      - "8181:8080"
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - nacos_data:/home/nacos/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      app-network:
+        aliases:
+          - nacos
+
+  # User Service 业务服务
+  user-service:
+    build:
+      context: ../../../  # 指向项目根目录
+      dockerfile: build/docker/user-service/Dockerfile
+    container_name: qing_user_service
+    restart: unless-stopped
+    ports: []
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/love_movie?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: redis123
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      NACOS_SERVER_ADDR: nacos:8848
+      NACOS_USERNAME: nacos
+      NACOS_PASSWORD: nacos
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      app-network:
+        aliases:
+          - user-service
+
+volumes:
+  mysql_data:
+  nacos_data:
+  redis_data:
+  minio_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 1. 坐标：parent 只做 dependency & plugin 管理，不可运行 -->
+    <groupId>com.huangyuan</groupId>
+    <artifactId>qing-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>qing-parent</name>
+    <description>qing 微服务聚合父 POM（JDK 21 + Spring Boot 3.3.4）</description>
+
+    <!-- 2. 统一属性：版本号集中管理 -->
+    <properties>
+        <!-- 基础 -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- 框架 -->
+        <spring-boot.version>3.3.4</spring-boot.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>      <!-- 2024-10 最新 -->
+        <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
+
+        <!-- 常用工具 -->
+        <mybatis-spring-boot.version>3.0.3</mybatis-spring-boot.version>
+        <pagehelper.version>2.1.1</pagehelper.version>
+        <redisson.version>3.37.0</redisson.version>
+        <hutool.version>5.8.35</hutool.version>
+        <jackson.version>2.18.0</jackson.version>
+        <swagger.version>2.5.0</swagger.version>
+        <knife4j.version>4.4.0</knife4j.version>   <!-- openapi3 增强 UI -->
+        <testcontainers.version>1.20.2</testcontainers.version>
+
+        <!-- 插件 -->
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
+        <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
+        <maven-checkstyle.version>9.3</maven-checkstyle.version>
+    </properties>
+
+    <!-- 3. 依赖管理：一次性锁死所有版本 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot 官方 BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud Alibaba -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 数据层 -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+
+            <!-- 缓存 / 分布式锁 -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <!-- 工具 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Swagger -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- 文档 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <!-- 测试 -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 4. 插件管理：子模块直接引用即可 -->
+    <build>
+        <plugins>
+            <!-- 编译 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <release>21</release>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- 测试 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <!-- 并行跑单元测试 -->
+                    <forkCount>1C</forkCount>
+                    <reuseForks>true</reuseForks>
+                </configuration>
+            </plugin>
+
+            <!-- 代码质量 -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-maven-plugin.version}</version>
+                <configuration>
+                    <excludeFilterFile>${maven.multiModuleProjectDirectory}/style/spotbugs/exclude.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${maven-checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${maven.multiModuleProjectDirectory}/style/checkstyle/qing_checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <!-- 不要写 executions，只提供版本和配置 -->
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- 5. 聚合模块 -->
+    <modules>
+        <!-- 基础模块 -->
+        <module>code/foundation/qing-common</module>
+        <module>code/foundation/qing-spring-boot-starter-web</module>
+        <module>code/foundation/qing-spring-boot-starter-security</module>
+        <module>code/foundation/qing-spring-boot-starter-mybatis</module>
+        <module>code/foundation/qing-spring-boot-starter-lock</module>
+        <module>code/foundation/qing-spring-boot-starter-idempotent</module>
+        <module>code/foundation/qing-sdk-openfeign</module>
+
+<!--        &lt;!&ndash; 用户服务模块 &ndash;&gt;-->
+<!--        <module>code/business/user-service/user-application</module>-->
+<!--        <module>code/business/user-service/user-domain</module>-->
+<!--        <module>code/business/user-service/user-infrastructure</module>-->
+<!--        <module>code/business/user-service/user-integration</module>-->
+<!--        <module>code/business/user-service/user-interface</module>-->
+<!--        <module>code/business/user-service/user-boot</module>-->
+
+        <!-- 商品服务模块 -->
+        <module>code/business/goods-service/goods-boot</module>
+        <module>code/business/goods-service/goods-interface</module>
+        <module>code/business/goods-service/goods-integration</module>
+        <module>code/business/goods-service/goods-application</module>
+        <module>code/business/goods-service/goods-domain</module>
+        <module>code/business/goods-service/goods-infrastructure</module>
+
+<!--        &lt;!&ndash; 内容服务模块 &ndash;&gt;-->
+<!--        <module>code/business/content-service/content-application</module>-->
+<!--        <module>code/business/content-service/content-domain</module>-->
+<!--        <module>code/business/content-service/content-infrastructure</module>-->
+<!--        <module>code/business/content-service/content-interface</module>-->
+<!--        <module>code/business/content-service/content-boot</module>-->
+
+<!--        &lt;!&ndash; 订单服务模块 &ndash;&gt;-->
+<!--        <module>code/business/order-service/order-application</module>-->
+<!--        <module>code/business/order-service/order-domain</module>-->
+<!--        <module>code/business/order-service/order-infrastructure</module>-->
+<!--        <module>code/business/order-service/order-interface</module>-->
+<!--        <module>code/business/order-service/order-boot</module>-->
+
+<!--        &lt;!&ndash; 营销服务模块 &ndash;&gt;-->
+<!--        <module>code/business/sale-service/sale-application</module>-->
+<!--        <module>code/business/sale-service/sale-domain</module>-->
+<!--        <module>code/business/sale-service/sale-infrastructure</module>-->
+<!--        <module>code/business/sale-service/sale-interface</module>-->
+<!--        <module>code/business/sale-service/sale-boot</module>-->
+
+        <!--        &lt;!&ndash; 平台服务模块 &ndash;&gt;-->
+        <!--        <module>code/platform/gateway-service</module>-->
+    </modules>
+
+
+</project>

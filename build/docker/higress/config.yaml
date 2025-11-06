@@ -1,0 +1,68 @@
+# build/docker/higress/config.yaml
+
+apiVersion: higress.io/v1
+kind: McpBridge
+metadata:
+  name: default
+  namespace: higress-system
+spec:
+  registries:
+    - domain: 127.0.0.1
+      name: nacos
+      port: 8848
+      type: nacos2
+      nacosGroups:
+        - DEFAULT_GROUP
+      nacosNamespaceId: public
+      auth:
+        authType: default
+        username: nacos
+        password: nacos
+
+---
+apiVersion: networking.higress.io/v1
+kind: Gateway
+metadata:
+  name: love-movie-gateway
+  namespace: higress-system
+spec:
+  gatewayType: Conventional
+  instances:
+    - name: love-movie-gateway
+      port: 8080
+      protocol: HTTP
+
+---
+apiVersion: networking.higress.io/v1
+kind: Http2Rpc
+metadata:
+  name: user-service-http2rpc
+  namespace: higress-system
+spec:
+  services:
+    - name: user-service
+      namespace: default
+      group: DEFAULT_GROUP
+      serviceName: user-service
+      port: 8080
+
+---
+apiVersion: networking.higress.io/v1
+kind: Api
+metadata:
+  name: user-service-api
+  namespace: higress-system
+spec:
+  apiName: user-service
+  match:
+    - path:
+        type: Prefix
+        value: /api/users
+  destination:
+    - host: user-service.default.svc.cluster.local
+      port: 28080
+      weight: 100
+  timeout: 5000
+  retries:
+    attempts: 3
+    perTryTimeout: 2000
