@@ -4,6 +4,9 @@ set -e
 
 echo "🚀 开始部署微服务套件..."
 
+echo "检查环境..."
+./check-environment.sh
+
 # 检查Docker是否运行
 if ! docker info > /dev/null 2>&1; then
     echo "❌ Docker 未运行，请启动Docker"
@@ -18,8 +21,8 @@ if [ -n "$RUNNING_CONTAINERS" ]; then
     docker stop $RUNNING_CONTAINERS
 fi
 
-# 构建基础镜像
-./build-base-images.sh
+echo "构建基础镜像..."
+./build-base-image.sh
 
 # 构建所有服务
 echo "🔨 构建所有服务..."

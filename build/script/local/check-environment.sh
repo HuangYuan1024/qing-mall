@@ -21,9 +21,10 @@ fi
 # 检查必要的目录和文件
 REQUIRED_FILES=(
     "docker-compose.yml"
-    "../../docker/user-service/Dockerfile"
+    "../../docker/service/goods-service/Dockerfile"
     "../../docker/mysql/init/01-init-databases.sql"
     "../../docker/mysql/init/02-nacos-schema.sql"
+    "../../docker/mysql/init/03-shop-goods.sql"
     "../../docker/higress/config.yaml"
 )
 
@@ -35,12 +36,12 @@ for file in "${REQUIRED_FILES[@]}"; do
     fi
 done
 
-# 检查user-service jar包
-JAR_FILE="../../../code/business/user-service/user-boot/target/*.jar"
+# 检查goods-service jar包
+JAR_FILE="../../../code/business/goods-service/goods-boot/target/*.jar"
 if ls $JAR_FILE 1> /dev/null 2>&1; then
-    echo "✅ user-service jar包存在"
+    echo "✅ goods-service jar包存在"
 else
-    echo "⚠️  user-service jar包不存在，请先构建项目"
+    echo "⚠️  goods-service jar包不存在，请先构建项目"
 fi
 
 echo ""
