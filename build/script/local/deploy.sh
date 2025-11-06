@@ -24,6 +24,10 @@ fi
 echo "构建基础镜像..."
 ./build-base-image.sh
 
+# 构建service镜像
+echo "🔨 构建 goods-service 镜像..."
+docker build -t qing/goods-service:latest -f ../../docker/service/goods-service/Dockerfile ../../../
+
 # 构建所有服务
 echo "🔨 构建所有服务..."
 docker-compose up -d

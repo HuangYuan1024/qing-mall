@@ -59,18 +59,6 @@ build_base_image() {
     # 构建镜像
     if docker build -t "${BASE_IMAGE_FULL}" -f "$DOCKERFILE_PATH" .; then
         log_info "✅ 基础镜像构建成功: ${BASE_IMAGE_FULL}"
-
-        # 暂停5秒
-        sleep 5
-
-        # 验证镜像
-        log_info "验证镜像..."
-        if docker run --rm "${BASE_IMAGE_FULL}" java -version && \
-           docker run --rm "${BASE_IMAGE_FULL}" curl --version; then
-            log_info "✅ 镜像验证成功"
-        else
-            log_warn "⚠️  镜像验证过程中出现警告"
-        fi
     else
         log_error "❌ 基础镜像构建失败"
         exit 1
