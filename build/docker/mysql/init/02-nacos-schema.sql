@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-# 使用数据库 nacos_config
+-- 使用数据库 nacos_config
 USE `nacos_config`;
 
 -- 然后创建表

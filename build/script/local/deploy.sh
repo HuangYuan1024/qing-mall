@@ -2,7 +2,7 @@
 
 set -e
 
-echo "🚀 开始部署 Love Movie 微服务套件..."
+echo "🚀 开始部署微服务套件..."
 
 # 检查Docker是否运行
 if ! docker info > /dev/null 2>&1; then
@@ -12,24 +12,18 @@ fi
 
 # 检查是否已经有运行中的容器
 echo "📦 检查现有容器..."
-RUNNING_CONTAINERS=$(docker ps -q --filter "name=love_movie_")
+RUNNING_CONTAINERS=$(docker ps -q --filter "name=qing_")
 if [ -n "$RUNNING_CONTAINERS" ]; then
     echo "🛑 停止现有容器..."
     docker stop $RUNNING_CONTAINERS
 fi
 
-# 拉取基础镜像
-echo "📥 拉取所需镜像..."
-docker pull mysql:9.1 || echo "⚠️  使用本地MySQL镜像"
-docker pull nacos/nacos-server:v3.0.3 || echo "⚠️  使用本地Nacos镜像"
+# 构建基础镜像
+./build-base-images.sh
 
-# 构建user-service镜像
-echo "🔨 构建 user-service 镜像..."
-docker build -t love-movie/user-service:latest -f ../../docker/user-service/Dockerfile ../../../
-
-# 启动所有服务
-echo "🎯 启动所有服务..."
-docker-compose up -d mysql redis minio nacos user-service
+# 构建所有服务
+echo "🔨 构建所有服务..."
+docker-compose up -d
 
 # 等待服务启动
 echo "⏳ 等待服务启动..."
@@ -38,14 +32,14 @@ sleep 15
 # 验证 Nacos 配置 - 使用更可靠的验证方法
 echo "🔍 验证 Nacos 配置..."
 echo "检查 Nacos 配置文件内容:"
-docker exec love_movie_nacos cat /home/nacos/conf/application.properties || echo "无法读取配置文件"
+docker exec qing_nacos cat /home/nacos/conf/application.properties || echo "无法读取配置文件"
 
 # 多种方式验证配置
-CONFIG_CHECK1=$(docker exec love_movie_nacos grep -q "nacos.core.api.compatibility.console.enabled=true" /home/nacos/conf/application.properties 2>/dev/null && echo "found" || echo "not found")
-CONFIG_CHECK2=$(docker exec love_movie_nacos cat /home/nacos/conf/application.properties 2>/dev/null | grep -q "nacos.core.api.compatibility.console.enabled=true" && echo "found" || echo "not found")
+CONFIG_CHECK1=$(docker exec qing_nacos grep -q "nacos.core.api.compatibility.console.enabled=true" /home/nacos/conf/application.properties 2>/dev/null && echo "found" || echo "not found")
+CONFIG_CHECK2=$(docker exec qing_nacos cat /home/nacos/conf/application.properties 2>/dev/null | grep -q "nacos.core.api.compatibility.console.enabled=true" && echo "found" || echo "not found")
 
 # 检查 server.address 配置
-SERVER_ADDRESS_CHECK=$(docker exec love_movie_nacos grep -q "server.address=0.0.0.0" /home/nacos/conf/application.properties 2>/dev/null && echo "found" || echo "not found")
+SERVER_ADDRESS_CHECK=$(docker exec qing_nacos grep -q "server.address=0.0.0.0" /home/nacos/conf/application.properties 2>/dev/null && echo "found" || echo "not found")
 
 echo "配置检查结果:"
 echo "方式1: $CONFIG_CHECK1"
@@ -58,11 +52,11 @@ else
     echo "❌ Nacos 兼容性配置验证失败，尝试直接写入容器..."
 
     # 直接写入容器
-    docker exec love_movie_nacos sh -c 'echo "nacos.core.api.compatibility.console.enabled=true" >> /home/nacos/conf/application.properties'
+    docker exec qing_nacos sh -c 'echo "nacos.core.api.compatibility.console.enabled=true" >> /home/nacos/conf/application.properties'
 
     # 重启 Nacos 使配置生效
     echo "重启 Nacos 容器..."
-    docker restart love_movie_nacos
+    docker restart qing_nacos
 
     # 等待 Nacos 重启
     echo "等待 Nacos 重启..."
@@ -76,7 +70,7 @@ else
     done
 
     # 最终验证
-    if docker exec love_movie_nacos grep -q "nacos.core.api.compatibility.console.enabled=true" /home/nacos/conf/application.properties 2>/dev/null; then
+    if docker exec qing_nacos grep -q "nacos.core.api.compatibility.console.enabled=true" /home/nacos/conf/application.properties 2>/dev/null; then
         echo "✅ Nacos 兼容性配置最终验证成功"
     else
         echo "❌ Nacos 兼容性配置仍然失败，但继续部署..."
@@ -90,11 +84,11 @@ else
     echo "❌ server.address 配置验证失败，尝试直接写入容器..."
 
     # 直接写入容器
-    docker exec love_movie_nacos sh -c 'echo "server.address=0.0.0.0" >> /home/nacos/conf/application.properties'
+    docker exec qing_nacos sh -c 'echo "server.address=0.0.0.0" >> /home/nacos/conf/application.properties'
 
     # 重启 Nacos 使配置生效
     echo "重启 Nacos 容器..."
-    docker restart love_movie_nacos
+    docker restart qing_nacos
 
     # 等待 Nacos 重启
     echo "等待 Nacos 重启..."
@@ -108,7 +102,7 @@ else
     done
 
     # 最终验证
-    if docker exec love_movie_nacos grep -q "server.address=0.0.0.0" /home/nacos/conf/application.properties 2>/dev/null; then
+    if docker exec qing_nacos grep -q "server.address=0.0.0.0" /home/nacos/conf/application.properties 2>/dev/null; then
         echo "✅ server.address 配置最终验证成功"
     else
         echo "❌ server.address 配置仍然失败，但继续部署..."

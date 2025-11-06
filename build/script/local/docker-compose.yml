@@ -6,7 +6,7 @@ services:
   # MySQL 数据库服务
   mysql:
     image: mysql:9.1
-    container_name: mysql
+    container_name: qing_mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -29,7 +29,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: redis
+    container_name: qing_redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass redis123
     ports:
@@ -48,7 +48,7 @@ services:
 
   minio:
     image: minio/minio
-    container_name: minio
+    container_name: qing_minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -72,7 +72,7 @@ services:
   # Nacos 配置中心
   nacos:
     image: nacos/nacos-server:v3.0.3
-    container_name: nacos
+    container_name: qing_nacos
     restart: unless-stopped
     environment:
       - MODE=standalone
@@ -134,12 +134,12 @@ services:
         aliases:
           - nacos
 
-  # User Service 业务服务
-  user-service:
+  # Goods Service 业务服务
+  goods-service:
     build:
       context: ../../../  # 指向项目根目录
-      dockerfile: build/docker/user-service/Dockerfile
-    container_name: qing_user_service
+      dockerfile: build/docker/goods-service/Dockerfile
+    container_name: qing_goods_service
     restart: unless-stopped
     ports: []
     environment:
@@ -169,7 +169,7 @@ services:
     networks:
       app-network:
         aliases:
-          - user-service
+          - goods-service
 
 volumes:
   mysql_data:
