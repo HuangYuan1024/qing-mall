@@ -127,22 +127,22 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 HIGRESS_INSTALL_DIR="$PROJECT_ROOT/higress"
 echo "Higress 安装目录: $HIGRESS_INSTALL_DIR"
 
-## 创建安装目录
-#mkdir -p "$HIGRESS_INSTALL_DIR"
-#
-## 进入安装目录执行安装命令
-#cd ../../../
-#
-## 清理可能存在的旧安装
-#echo "🧹 清理可能存在的旧 Higress 安装..."
-#docker ps -a --filter "name=higress" --format "{{.Names}}" | xargs -r docker rm -f
-#docker network ls --filter "name=higress" --format "{{.Name}}" | xargs -r docker network rm 2>/dev/null || true
-#
-## 下载并执行Higress安装脚本
-#echo "从GitHub 下载 Higress 安装脚本..."
-## 用宿主的Docker网络
-#curl -fsSL https://higress.io/standalone/get-higress.sh | bash -s -- -c "nacos://host.docker.internal:8848" -a;
-#echo "✅ Higress 安装成功"
+# 创建安装目录
+mkdir -p "$HIGRESS_INSTALL_DIR"
+
+# 进入安装目录执行安装命令
+cd ../../../
+
+# 清理可能存在的旧安装
+echo "🧹 清理可能存在的旧 Higress 安装..."
+docker ps -a --filter "name=higress" --format "{{.Names}}" | xargs -r docker rm -f
+docker network ls --filter "name=higress" --format "{{.Name}}" | xargs -r docker network rm 2>/dev/null || true
+
+# 下载并执行Higress安装脚本
+echo "从GitHub 下载 Higress 安装脚本..."
+# 用宿主的Docker网络
+curl -fsSL https://higress.io/standalone/get-higress.sh | bash -s -- -c "nacos://host.docker.internal:8848" -a;
+echo "✅ Higress 安装成功"
 
 # 由于官方脚本会创建自己的容器，我们需要调整网络配置
 echo "🌐 配置网络连接..."
