@@ -6,8 +6,10 @@ spring:
     name: goods-service
   cloud:
     nacos:
-      #server-addr: host.docker.internal:8848
-      server-addr: localhost:8848
+      # 当service打包成docker镜像时，使用这个路径
+      server-addr: host.docker.internal:8848
+      # 当service在本地开发环境运行时，使用这个路径
+      #server-addr: localhost:8848
       discovery:
         namespace: higress-system
       config:
