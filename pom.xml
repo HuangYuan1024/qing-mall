@@ -10,14 +10,14 @@
     <packaging>pom</packaging>
 
     <name>qing-parent</name>
-    <description>qing 微服务聚合父 POM（JDK 21 + Spring Boot 3.3.4）</description>
+    <description>qing 微服务聚合父 POM（JDK 20 + Spring Boot 3.3.4）</description>
 
     <!-- 2. 统一属性：版本号集中管理 -->
     <properties>
         <!-- 基础 -->
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>20</java.version>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -100,6 +100,7 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
@@ -142,7 +143,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <release>21</release>
+                    <release>20</release>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

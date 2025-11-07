@@ -1,11 +1,13 @@
 package com.huangyuan.goodsboot;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
-@ComponentScan(basePackages = {"com.huangyuan.goodsboot", "com.huangyuan.goodsinterface", "com.huangyuan.qingspringbootstarterweb"})
+@SpringBootApplication(scanBasePackages = "com.huangyuan")
+@MapperScan("com.huangyuan.goodsinfrastructure.persistence.mapper")
+@ComponentScan(basePackages = {"com.huangyuan.goodsboot", "com.huangyuan.goodsinterface", "com.huangyuan.goodsapplication", "com.huangyuan.goodsdomain", "com.huangyuan.goodsinfrastructure", "com.huangyuan.qingspringbootstarterweb"})
 public class GoodsBootApplication {
 
     public static void main(String[] args) {

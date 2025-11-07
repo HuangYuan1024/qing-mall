@@ -1,0 +1,36 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: goods-service
+  cloud:
+    nacos:
+      #server-addr: host.docker.internal:8848
+      server-addr: localhost:8848
+      discovery:
+        namespace: higress-system
+      config:
+        file-extension: yaml
+        namespace: higress-system
+  config:
+    import: optional:nacos:${spring.application.name}
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/shop_goods?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # ====================MybatisPlus====================
+  mybatis-plus:
+    mapper-locations: classpath*:mapper/*.xml
+    type-aliases-package: com.huangyuan.goodsinfrastructure.persistence.po
+    configuration:
+      map-underscore-to-camel-case: true
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  #日志配置
+  logging:
+    pattern:
+      console: "%msg%n"
