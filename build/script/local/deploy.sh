@@ -21,12 +21,16 @@ if [ -n "$RUNNING_CONTAINERS" ]; then
     docker stop $RUNNING_CONTAINERS
 fi
 
+# 清除旧service容器（容错写法）
+echo "清除旧service容器..."
+docker ps -aq --filter "name=_service" | xargs -r docker rm -f
+
 echo "构建基础镜像..."
 ./build-base-image.sh
 
-# 清除service镜像
+# 清除旧service镜像（强制）
 echo "清除旧service镜像..."
-docker image rm -f qing/goods-service
+docker image rm -f qing/goods-service:latest || true
 
 # 构建所有服务
 echo "🔨 构建所有服务..."
