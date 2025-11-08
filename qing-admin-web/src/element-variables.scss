@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+/* 改变主题色变量 */
+$--color-primary: #009688;//主按钮，tab,radio,checkbox,环形进度条，页码选中文字，导航选中文字
+$--color-success: #5FB878;
+$--color-warning: #FF5722;
+$--color-danger: #f56c6c;
+$--color-info: #909399;
+
+$--color_000:#000;
+$--color_fff:#fff;
+$--gray_ccc:#ccc;
+$--gray_999:#999;
+$--gray_666:#666;
+$--gray_555:#555;
+$--gray_333:#333;
+$--th_bck:#f2f6fa;//table的th的背景
+$--bor: #ebeef5;//tab,table的线，环形进度条的背景
+$--bck:#eef1f6;//查询板块背景，tab基础背景，首页任务板块背景
+$--color-bck2:#7eb338;//下单页右边第二，第三个按钮的颜色
+$--color-important3:#45a814;//提醒色3
+$--color-important2:#e87901;//提醒色2
+$--color-important1:#ec0b0b;//提醒色1
+$--color-sign:#45a814;//标签
+$--color-nav:#5d60e6;//导航栏的背景
+$--color-navtxt:#f68f09;//选中导航文字的颜色
+$--table-click:#222;//表格中可点击的颜色
+$--link:#238df9;//链接的颜色
+$--linkhover:#1466d6;//链接点击后的颜色
+
+
+
+$--font-path: '../node_modules/element-ui/lib/theme-chalk/fonts';
+
+@import "../node_modules/element-ui/packages/theme-chalk/src/index";
+
+
+
+
