@@ -1,11 +1,13 @@
 package com.huangyuan.goodsdomain.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Brand 聚合根
  */
 @Getter
+@AllArgsConstructor
 public class Brand {
 
     private final BrandId id;
@@ -13,15 +15,6 @@ public class Brand {
     private String image;
     private String initial;
     private Integer sort;
-
-    /* ---------- 构造 & 工厂 ---------- */
-    public Brand(BrandId id, String name, String image, String initial, Integer sort) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.initial = initial;
-        this.sort = sort;
-    }
 
     public static Brand create(String name, String image, String initial, Integer sort) {
         return new Brand(null, name, image, initial, sort);

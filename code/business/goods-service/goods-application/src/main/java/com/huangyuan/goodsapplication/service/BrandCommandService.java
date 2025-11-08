@@ -7,7 +7,7 @@ public interface BrandCommandService {
 
     void createBrand(CreateBrandCmd cmd);
 
-    void updateBrand(Integer id, ChangeBrandCmd cmd);
+    void updateBrand(ChangeBrandCmd cmd);
 
     void deleteBrand(Integer id);
 }

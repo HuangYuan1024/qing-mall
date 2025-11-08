@@ -11,5 +11,7 @@ public interface BrandRepository {
     Optional<Brand> find(BrandId id);
     boolean existsName(String name);
     List<Brand> listAll();
+    List<Brand> listByName(String name);
+    List<Brand> listByCategoryId(Integer categoryId);
     int delete(Brand brand);
 }

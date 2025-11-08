@@ -1,5 +1,6 @@
 package com.huangyuan.goodsapplication.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.dto.BrandDto;
 import com.huangyuan.goodsapplication.service.BrandQueryService;
 import com.huangyuan.goodsdomain.model.BrandId;
@@ -20,6 +21,16 @@ public class BrandQueryServiceImpl implements BrandQueryService {
         return repository.listAll().stream()
                 .map(b -> new BrandDto(b.getId().getValue(), b.getName(), b.getImage(), b.getInitial(), b.getSort()))
                 .toList();
+    }
+
+    @Override
+    public PageDTO<BrandDto> listBrands(Integer pageNum, Integer pageSize, BrandDto brand) {
+        return null;
+    }
+
+    @Override
+    public List<BrandDto> listBrandsByCategoryId(Integer categoryId) {
+        return List.of();
     }
 
     public BrandDto getBrand(Integer id) {

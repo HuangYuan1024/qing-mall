@@ -1,15 +1,18 @@
 package com.huangyuan.goodsinfrastructure.persistence.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.huangyuan.goodsdomain.model.Brand;
 import com.huangyuan.goodsdomain.model.BrandId;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
-import com.huangyuan.goodsinfrastructure.persistence.mapper.BrandMapper;
 import com.huangyuan.goodsinfrastructure.persistence.converter.BrandPoConverter;
+import com.huangyuan.goodsinfrastructure.persistence.mapper.BrandMapper;
 import com.huangyuan.goodsinfrastructure.persistence.po.BrandPo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +50,23 @@ public class BrandRepositoryImpl implements BrandRepository {
         return mapper.selectList(null).stream()
                 .map(converter::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Brand> listByName(String name) {
+        return mapper.selectList(new LambdaQueryWrapper<BrandPo>().like(BrandPo::getName, name))
+                .stream()
+                .map(converter::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Brand> listByCategoryId(Integer categoryId) {
+        List<Integer> brandIds = mapper.selectBrandIds(categoryId);
+        if (CollUtil.isEmpty(brandIds)) {
+            return Collections.emptyList();
+        }
+
     }
 
     @Override

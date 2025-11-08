@@ -12,7 +12,9 @@ public class ChangeBrandCmd implements Serializable {
     private Integer id;
     @NotBlank
     private String name;
+    @NotBlank
     private String image;
+    @NotBlank
     private String initial;
     @NotNull
     private Integer sort;

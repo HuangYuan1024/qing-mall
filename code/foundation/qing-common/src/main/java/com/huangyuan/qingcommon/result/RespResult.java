@@ -37,32 +37,33 @@ public class RespResult<T> implements Serializable {
         this.code = resultCode.getCode();
         this.message = resultCode.getMessage();
     }
-    public static RespResult ok() {
-        return new RespResult(null, RespCode.SUCCESS);
+    public static RespResult<Void> ok() {
+        return new RespResult<>(null, RespCode.SUCCESS);
     }
 
-    public static RespResult ok(Object data) {
-        return new RespResult(data, RespCode.SUCCESS);
+    public static <T> RespResult<T> ok(T data) {
+        return new RespResult<>(data, RespCode.SUCCESS);
     }
 
-    public static RespResult error() {
-        return new RespResult(null, RespCode.ERROR);
+    public static RespResult<Void> error() {
+        return new RespResult<>(null, RespCode.ERROR);
     }
 
-    public static RespResult error(String message) {
-        return secByError(RespCode.ERROR.getCode(),message);
+    public static RespResult<Void> error(String message) {
+        return secByError(RespCode.ERROR.getCode(), message);
     }
 
-    //自定义异常
-    public static RespResult secByError(Integer code,String message) {
-        RespResult err = new RespResult();
+    // 自定义异常
+    public static RespResult<Void> secByError(Integer code, String message) {
+        RespResult<Void> err = new RespResult<>();
         err.setCode(code);
         err.setMessage(message);
         return err;
     }
 
-    public static RespResult error(RespCode resultCode) {
-        return new RespResult(resultCode);
+    public static RespResult<Void> error(RespCode resultCode) {
+        return new RespResult<>(resultCode);
     }
+
 
 }

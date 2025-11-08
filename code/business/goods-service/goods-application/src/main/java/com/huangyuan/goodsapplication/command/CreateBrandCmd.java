@@ -10,7 +10,9 @@ import java.io.Serializable;
 public class CreateBrandCmd implements Serializable {
     @NotBlank
     private String name;
+    @NotBlank
     private String image;
+    @NotBlank
     private String initial;
     @NotNull
     private Integer sort;

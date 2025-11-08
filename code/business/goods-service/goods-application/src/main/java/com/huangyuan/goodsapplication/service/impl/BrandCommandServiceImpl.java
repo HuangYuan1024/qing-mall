@@ -23,8 +23,8 @@ public class BrandCommandServiceImpl implements BrandCommandService {
         repository.save(brand);
     }
 
-    public void updateBrand(Integer id, ChangeBrandCmd cmd) {
-        Brand brand = domainService.updateBrand(id, cmd.getName(), cmd.getImage(), cmd.getInitial(), cmd.getSort());
+    public void updateBrand(ChangeBrandCmd cmd) {
+        Brand brand = domainService.updateBrand(cmd.getId(), cmd.getName(), cmd.getImage(), cmd.getInitial(), cmd.getSort());
         repository.save(brand);
     }
 
