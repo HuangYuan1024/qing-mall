@@ -1,3 +1,4 @@
 .configured
 /volumes/prometheus/data/
 /volumes/loki/data/
+/volumes/prometheus/data/wal/
