@@ -1,8 +1,8 @@
 package com.huangyuan.goodsinfrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.huangyuan.goodsdomain.model.Category;
-import com.huangyuan.goodsdomain.model.CategoryId;
+import com.huangyuan.goodsdomain.aggregate.Category;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
 import com.huangyuan.goodsinfrastructure.persistence.converter.CategoryPoConverter;
 import com.huangyuan.goodsinfrastructure.persistence.mapper.CategoryMapper;
@@ -33,7 +33,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public Optional<Category> find(CategoryId id) {
-        return Optional.ofNullable(mapper.selectById(id.getValue()))
+        return Optional.ofNullable(mapper.selectById(id.value()))
                 .map(converter::toDomain);
     }
 
@@ -58,6 +58,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public int delete(Category category) {
-        return mapper.deleteById(category.getId().getValue());
+        return mapper.deleteById(category.getId().value());
     }
 }

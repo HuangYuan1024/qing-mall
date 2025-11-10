@@ -3,7 +3,7 @@ package com.huangyuan.goodsapplication.service.impl;
 import com.huangyuan.goodsapplication.converter.CategoryDtoConverter;
 import com.huangyuan.goodsapplication.dto.CategoryDto;
 import com.huangyuan.goodsapplication.service.CategoryQueryService;
-import com.huangyuan.goodsdomain.model.CategoryId;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

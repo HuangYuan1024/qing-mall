@@ -3,7 +3,7 @@ package com.huangyuan.goodsapplication.service.impl;
 import com.huangyuan.goodsapplication.command.ChangeBrandCmd;
 import com.huangyuan.goodsapplication.command.CreateBrandCmd;
 import com.huangyuan.goodsapplication.service.BrandCommandService;
-import com.huangyuan.goodsdomain.model.Brand;
+import com.huangyuan.goodsdomain.aggregate.Brand;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
 import com.huangyuan.goodsdomain.service.impl.BrandDomainServiceImpl;
 import lombok.RequiredArgsConstructor;

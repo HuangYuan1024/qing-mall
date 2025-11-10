@@ -1,7 +1,7 @@
 package com.huangyuan.goodsdomain.service.impl;
 
-import com.huangyuan.goodsdomain.model.Category;
-import com.huangyuan.goodsdomain.model.CategoryId;
+import com.huangyuan.goodsdomain.aggregate.Category;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
 import com.huangyuan.goodsdomain.service.CategoryDomainService;
 import com.huangyuan.qingcommon.exception.BizException;

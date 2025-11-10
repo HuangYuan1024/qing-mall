@@ -1,6 +1,6 @@
 package com.huangyuan.goodsdomain.service;
 
-import com.huangyuan.goodsdomain.model.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 
 public interface SkuAttributeDomainService {
     SkuAttribute createSkuAttribute(String name, String options, Integer sort);

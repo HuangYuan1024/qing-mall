@@ -1,7 +1,7 @@
 package com.huangyuan.goodsdomain.repository;
 
-import com.huangyuan.goodsdomain.model.SkuAttribute;
-import com.huangyuan.goodsdomain.model.SkuAttributeId;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 
 import java.util.List;
 import java.util.Optional;

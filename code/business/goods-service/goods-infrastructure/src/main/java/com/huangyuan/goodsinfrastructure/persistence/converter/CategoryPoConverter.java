@@ -1,6 +1,6 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
-import com.huangyuan.goodsdomain.model.Category;
+import com.huangyuan.goodsdomain.aggregate.Category;
 import com.huangyuan.goodsinfrastructure.persistence.po.CategoryPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,7 +1,7 @@
 package com.huangyuan.goodsdomain.repository;
 
-import com.huangyuan.goodsdomain.model.Category;
-import com.huangyuan.goodsdomain.model.CategoryId;
+import com.huangyuan.goodsdomain.aggregate.Category;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
 
 import java.util.List;
 import java.util.Optional;

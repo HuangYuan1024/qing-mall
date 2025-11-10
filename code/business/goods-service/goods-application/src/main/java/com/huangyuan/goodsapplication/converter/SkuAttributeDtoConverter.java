@@ -1,7 +1,7 @@
 package com.huangyuan.goodsapplication.converter;
 
 import com.huangyuan.goodsapplication.dto.SkuAttributeDto;
-import com.huangyuan.goodsdomain.model.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -1,6 +1,6 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
-import com.huangyuan.goodsdomain.model.Brand;
+import com.huangyuan.goodsdomain.aggregate.Brand;
 import com.huangyuan.goodsinfrastructure.persistence.po.BrandPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,7 +1,7 @@
 package com.huangyuan.goodsdomain.service.impl;
 
-import com.huangyuan.goodsdomain.model.SkuAttribute;
-import com.huangyuan.goodsdomain.model.SkuAttributeId;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import com.huangyuan.goodsdomain.service.SkuAttributeDomainService;
 import com.huangyuan.qingcommon.exception.BizException;

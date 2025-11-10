@@ -3,7 +3,7 @@ package com.huangyuan.goodsapplication.service.impl;
 import com.huangyuan.goodsapplication.converter.SkuAttributeDtoConverter;
 import com.huangyuan.goodsapplication.dto.SkuAttributeDto;
 import com.huangyuan.goodsapplication.service.SkuAttributeQueryService;
-import com.huangyuan.goodsdomain.model.SkuAttributeId;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

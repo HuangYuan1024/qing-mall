@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.huangyuan.goodsdomain.model.Brand;
-import com.huangyuan.goodsdomain.model.BrandId;
+import com.huangyuan.goodsdomain.aggregate.Brand;
+import com.huangyuan.goodsdomain.aggregate.BrandId;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
 import com.huangyuan.goodsinfrastructure.persistence.converter.BrandPoConverter;
 import com.huangyuan.goodsinfrastructure.persistence.mapper.BrandMapper;
@@ -40,7 +40,7 @@ public class BrandRepositoryImpl implements BrandRepository {
 
     @Override
     public Optional<Brand> find(BrandId id) {
-        return Optional.ofNullable(mapper.selectById(id.getValue()))
+        return Optional.ofNullable(mapper.selectById(id.value()))
                 .map(converter::toDomain);
     }
 
@@ -122,6 +122,6 @@ public class BrandRepositoryImpl implements BrandRepository {
 
     @Override
     public int delete(Brand brand) {
-        return mapper.deleteById(brand.getId().getValue());
+        return mapper.deleteById(brand.getId().value());
     }
 }

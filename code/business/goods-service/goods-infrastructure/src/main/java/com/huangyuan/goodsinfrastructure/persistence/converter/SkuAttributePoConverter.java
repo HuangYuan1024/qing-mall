@@ -1,6 +1,6 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
-import com.huangyuan.goodsdomain.model.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 import com.huangyuan.goodsinfrastructure.persistence.po.SkuAttributePo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

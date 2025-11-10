@@ -3,7 +3,7 @@ package com.huangyuan.goodsapplication.service.impl;
 import com.huangyuan.goodsapplication.command.ChangeSkuAttributeCmd;
 import com.huangyuan.goodsapplication.command.CreateSkuAttributeCmd;
 import com.huangyuan.goodsapplication.service.SkuAttributeCommandService;
-import com.huangyuan.goodsdomain.model.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import com.huangyuan.goodsdomain.service.SkuAttributeDomainService;
 import lombok.RequiredArgsConstructor;

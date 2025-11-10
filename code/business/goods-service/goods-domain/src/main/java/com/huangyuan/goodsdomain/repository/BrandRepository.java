@@ -1,8 +1,8 @@
 package com.huangyuan.goodsdomain.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.huangyuan.goodsdomain.model.Brand;
-import com.huangyuan.goodsdomain.model.BrandId;
+import com.huangyuan.goodsdomain.aggregate.Brand;
+import com.huangyuan.goodsdomain.aggregate.BrandId;
 
 import java.util.List;
 import java.util.Optional;

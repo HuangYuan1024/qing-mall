@@ -1,7 +1,7 @@
 package com.huangyuan.goodsdomain.service.impl;
 
-import com.huangyuan.goodsdomain.model.Brand;
-import com.huangyuan.goodsdomain.model.BrandId;
+import com.huangyuan.goodsdomain.aggregate.Brand;
+import com.huangyuan.goodsdomain.aggregate.BrandId;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
 import com.huangyuan.goodsdomain.service.BrandDomainService;
 import com.huangyuan.qingcommon.exception.BizException;

@@ -1,8 +1,8 @@
 package com.huangyuan.goodsinfrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.huangyuan.goodsdomain.model.SkuAttribute;
-import com.huangyuan.goodsdomain.model.SkuAttributeId;
+import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import com.huangyuan.goodsinfrastructure.persistence.converter.SkuAttributePoConverter;
 import com.huangyuan.goodsinfrastructure.persistence.mapper.SkuAttributeMapper;
@@ -32,7 +32,7 @@ public class SkuAttributeRepositoryImpl implements SkuAttributeRepository {
 
     @Override
     public Optional<SkuAttribute> find(SkuAttributeId id) {
-        return Optional.ofNullable(mapper.selectById(id.getValue()))
+        return Optional.ofNullable(mapper.selectById(id.value()))
                 .map(converter::toDomain);
     }
 
@@ -57,6 +57,6 @@ public class SkuAttributeRepositoryImpl implements SkuAttributeRepository {
 
     @Override
     public int delete(SkuAttribute skuAttribute) {
-        return mapper.deleteById(skuAttribute.getId().getValue());
+        return mapper.deleteById(skuAttribute.getId().value());
     }
 }

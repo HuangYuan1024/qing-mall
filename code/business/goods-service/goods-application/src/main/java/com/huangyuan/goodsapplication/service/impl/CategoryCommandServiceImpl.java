@@ -3,7 +3,7 @@ package com.huangyuan.goodsapplication.service.impl;
 import com.huangyuan.goodsapplication.command.ChangeCategoryCmd;
 import com.huangyuan.goodsapplication.command.CreateCategoryCmd;
 import com.huangyuan.goodsapplication.service.CategoryCommandService;
-import com.huangyuan.goodsdomain.model.Category;
+import com.huangyuan.goodsdomain.aggregate.Category;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
 import com.huangyuan.goodsdomain.service.CategoryDomainService;
 import lombok.RequiredArgsConstructor;

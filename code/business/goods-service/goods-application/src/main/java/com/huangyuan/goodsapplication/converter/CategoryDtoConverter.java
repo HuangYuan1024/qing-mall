@@ -1,7 +1,7 @@
 package com.huangyuan.goodsapplication.converter;
 
 import com.huangyuan.goodsapplication.dto.CategoryDto;
-import com.huangyuan.goodsdomain.model.Category;
+import com.huangyuan.goodsdomain.aggregate.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

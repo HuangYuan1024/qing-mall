@@ -1,6 +1,6 @@
 package com.huangyuan.goodsdomain.service;
 
-import com.huangyuan.goodsdomain.model.Brand;
+import com.huangyuan.goodsdomain.aggregate.Brand;
 
 public interface BrandDomainService {
 
