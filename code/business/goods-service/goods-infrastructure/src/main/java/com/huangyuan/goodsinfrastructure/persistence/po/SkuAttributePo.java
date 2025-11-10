@@ -9,21 +9,26 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * SKU 属性持久化对象
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("brand")
-public class BrandPo implements Serializable {
-    //    品牌ID
-    //    MyBatisPlus主键策略注解
-    @TableId(type= IdType.AUTO)
+@TableName("sku_attribute")
+public class SkuAttributePo implements Serializable {
+
+    /** 主键ID */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    //    品牌名字
+
+    /** 属性名称 */
     private String name;
-    //    品牌图片
-    private String image;
-    //    品牌首字母
-    private String initial;
-    //    品牌排序
+
+    /** 属性选项，多个用英文逗号分隔（长度 2000） */
+    private String options;
+
+    /** 排序（越小越靠前） */
     private Integer sort;
+
 }

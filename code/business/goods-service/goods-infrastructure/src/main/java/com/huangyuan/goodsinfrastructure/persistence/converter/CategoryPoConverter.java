@@ -11,9 +11,9 @@ public interface CategoryPoConverter {
 
     CategoryPoConverter INSTANCE = Mappers.getMapper(CategoryPoConverter.class);
 
-    @Mapping(source = "id", target = "id.value")
+    @Mapping(target = "id", expression = "java(new CategoryId(po.getId()))")
     Category toDomain(CategoryPo po);
 
-    @Mapping(source = "id.value", target = "id")
+    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
     CategoryPo toPo(Category domain);
 }

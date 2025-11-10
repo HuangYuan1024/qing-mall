@@ -37,7 +37,7 @@ public class BrandDomainServiceImpl implements BrandDomainService {
     }
 
     public Brand deleteBrand(Integer id) {
-        Brand brand = repository.find(new BrandId(id))
+        repository.find(new BrandId(id))
                 .orElseThrow(() -> new BizException("要删除的品牌不存在"));
 
         return Brand.delete(new BrandId(id));

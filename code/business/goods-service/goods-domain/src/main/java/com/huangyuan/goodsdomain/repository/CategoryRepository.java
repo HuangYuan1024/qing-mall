@@ -11,6 +11,6 @@ public interface CategoryRepository {
     Optional<Category> find(CategoryId id);
     boolean existsName(String name);
     List<Category> listAll();
-    List<Category> listByParentId(Category category);
+    List<Category> listByParentId(Integer parentId);
     int delete(Category category);
 }

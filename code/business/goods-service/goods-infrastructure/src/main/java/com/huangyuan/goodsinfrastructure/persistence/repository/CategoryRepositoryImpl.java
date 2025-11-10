@@ -50,8 +50,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public List<Category> listByParentId(Category category) {
-        return mapper.selectByParentId(category.getId().getValue()).stream()
+    public List<Category> listByParentId(Integer parentId) {
+        return mapper.selectByParentId(parentId).stream()
                 .map(converter::toDomain)
                 .toList();
     }

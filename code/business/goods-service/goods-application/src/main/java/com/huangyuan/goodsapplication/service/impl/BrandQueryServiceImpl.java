@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class BrandQueryServiceImpl implements BrandQueryService {
 
     private final BrandRepository repository;
-    private final BrandDtoConverter converter;
+    private final BrandDtoConverter converter = BrandDtoConverter.INSTANCE;
 
     public List<BrandDto> listBrands(BrandDto brand) {
         if (brand == null) {

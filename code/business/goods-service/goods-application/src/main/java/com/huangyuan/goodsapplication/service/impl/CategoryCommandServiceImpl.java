@@ -5,7 +5,7 @@ import com.huangyuan.goodsapplication.command.CreateCategoryCmd;
 import com.huangyuan.goodsapplication.service.CategoryCommandService;
 import com.huangyuan.goodsdomain.model.Category;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
-import com.huangyuan.goodsdomain.service.impl.CategoryDomainServiceImpl;
+import com.huangyuan.goodsdomain.service.CategoryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CategoryCommandServiceImpl implements CategoryCommandService {
 
-    private final CategoryDomainServiceImpl domainService;
+    private final CategoryDomainService domainService;
     private final CategoryRepository repository;
 
     @Override

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huangyuan.goodsinfrastructure.persistence.mapper.SkuAttributeMapper">
+
+    <select id="existsById"
+            resultType="boolean">
+        SELECT COUNT(1)
+        FROM sku_attribute
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByCategoryId"
+            resultType="com.huangyuan.goodsinfrastructure.persistence.po.SkuAttributePo">
+        SELECT *
+        FROM sku_attribute
+        WHERE id IN (
+            SELECT attr_id
+            FROM category_attr
+            WHERE category_id = #{id}
+        )
+    </select>
+
+</mapper>

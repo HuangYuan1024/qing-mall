@@ -23,7 +23,7 @@ public class BrandController {
     private final BrandQueryService queryService;
 
     /**
-     *  增加品牌功能
+     *  增加品牌
      */
     @PostMapping("/addBrand")
     @Operation(summary = "添加品牌")
@@ -77,4 +77,3 @@ public class BrandController {
     }
 
 }
-

@@ -37,7 +37,7 @@ public class CategoryDomainServiceImpl implements CategoryDomainService {
 
     @Override
     public Category deleteCategory(Integer id) {
-        Category category = repository.find(new CategoryId(id))
+        repository.find(new CategoryId(id))
                 .orElseThrow(() -> new BizException("要删除的分类不存在"));
         return Category.delete(new CategoryId(id));
     }
