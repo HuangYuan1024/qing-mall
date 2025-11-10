@@ -11,11 +11,11 @@ public interface BrandPoConverter {
 
     BrandPoConverter INSTANCE = Mappers.getMapper(BrandPoConverter.class);
 
-    /* ① Po.id -> Domain(BrandId.value) */
-    @Mapping(source = "id", target = "id.value")
+    /* ① Po → Domain */
+    @Mapping(target = "id", expression = "java(new BrandId(po.getId()))")
     Brand toDomain(BrandPo po);
 
-    /* ② Domain(BrandId.value) -> Po.id */
-    @Mapping(source = "id.value", target = "id")
+    /* ② Domain → Po */
+    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
     BrandPo toPo(Brand domain);
 }

@@ -1,5 +1,6 @@
 package com.huangyuan.goodsinterface.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.command.ChangeBrandCmd;
 import com.huangyuan.goodsapplication.command.CreateBrandCmd;
 import com.huangyuan.goodsapplication.dto.BrandDto;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +54,26 @@ public class BrandController {
     public RespResult<Void> deleteBrand(@PathVariable("id") Integer id){
         commandService.deleteBrand(id);
         return RespResult.ok();
+    }
+
+    @GetMapping("/listBrands")
+    @Operation(summary = "查询品牌列表(条件查询)")
+    public RespResult<List<BrandDto>> listBrands(@Valid BrandDto brand){
+        return RespResult.ok(queryService.listBrands(brand));
+    }
+
+    @GetMapping("/pageBrands")
+    @Operation(summary = "分页查询品牌(条件查询)")
+    public RespResult<PageDTO<BrandDto>> pageBrands(@RequestParam("pageNum") Long pageNum,
+                                                    @RequestParam("pageSize") Long pageSize,
+                                                    @Valid BrandDto brand){
+        return RespResult.ok(queryService.pageBrands(pageNum, pageSize, brand));
+    }
+
+    @GetMapping("/category/{id}")
+    @Operation(summary = "根据分类id查询品牌列表")
+    public RespResult<List<BrandDto>> listBrandsByCategoryId(@PathVariable("id") Integer id){
+        return RespResult.ok(queryService.listBrandsByCategoryId(id));
     }
 
 }

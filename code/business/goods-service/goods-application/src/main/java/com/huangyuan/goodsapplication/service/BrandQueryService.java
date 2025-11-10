@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface BrandQueryService {
 
-    List<BrandDto> listBrands();
+    List<BrandDto> listBrands(BrandDto brand);
 
-    PageDTO<BrandDto> listBrands(Integer pageNum, Integer pageSize, BrandDto brand);
+    PageDTO<BrandDto> pageBrands(Long pageNum, Long pageSize, BrandDto brand);
 
     List<BrandDto> listBrandsByCategoryId(Integer categoryId);
 
