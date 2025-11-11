@@ -2,9 +2,13 @@ package com.huangyuan.goodsapplication.service.command;
 
 import com.huangyuan.goodsapplication.command.CreateSkuCommand;
 import com.huangyuan.goodsapplication.command.CreateSpuCommand;
+import com.huangyuan.goodsapplication.command.UpdateSpuCommand;
+import com.huangyuan.goodsapplication.converter.SpuDtoConverter;
 import com.huangyuan.goodsapplication.dto.SpuDto;
 import com.huangyuan.goodsdomain.aggregate.*;
+import com.huangyuan.goodsdomain.repository.SpuRepository;
 import com.huangyuan.qingcommon.exception.BizException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.SimpleIdGenerator;
@@ -14,7 +18,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class SpuCommandAppService {
+
+    private final SpuRepository spuRepository;
+    private final SpuDtoConverter converter;
 
     public SpuDto createSpu(CreateSpuCommand command) {
         // 1. 验证Command格式
@@ -56,7 +64,7 @@ public class SpuCommandAppService {
         spuRepository.save(spu);
 
         // 5. 返回DTO
-        return SpuConverter.toDTO(spu);
+        return converter.toDto(spu);
     }
 
     public void updateSpu(String spuId, UpdateSpuCommand command) {

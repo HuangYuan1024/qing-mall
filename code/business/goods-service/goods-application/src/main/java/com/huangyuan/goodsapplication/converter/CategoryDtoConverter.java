@@ -11,10 +11,7 @@ public interface CategoryDtoConverter {
 
     CategoryDtoConverter INSTANCE = Mappers.getMapper(CategoryDtoConverter.class);
 
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
+    @Mapping(target = "id", expression = "java(category.getId().getValue())")
     CategoryDto toDto(Category category);
-
-    @Mapping(target = "id", expression = "java(new CategoryId(dto.getId()))")
-    Category toDomain(CategoryDto categoryDto);
 
 }

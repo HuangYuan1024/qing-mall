@@ -5,7 +5,7 @@ import java.util.Map;
 
 public record AttributeList(String json) implements Serializable {
     public static AttributeList empty() {
-        return new AttributeList("[]");
+        return new AttributeList("{}");
     }
 
     public static AttributeList fromMap(Map<String, String> attributes) {

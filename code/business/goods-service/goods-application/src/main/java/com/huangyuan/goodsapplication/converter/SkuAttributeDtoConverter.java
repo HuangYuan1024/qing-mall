@@ -11,10 +11,7 @@ public interface SkuAttributeDtoConverter {
 
     SkuAttributeDtoConverter INSTANCE = Mappers.getMapper(SkuAttributeDtoConverter.class);
 
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
+    @Mapping(target = "id", expression = "java(skuAttribute.getId().getValue())")
     SkuAttributeDto toDto(SkuAttribute skuAttribute);
-
-    @Mapping(target = "id", expression = "java(new SkuAttributeId(dto.getId()))")
-    SkuAttribute toDomain(SkuAttributeDto skuAttributeDto);
 
 }

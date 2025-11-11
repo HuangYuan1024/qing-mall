@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +76,9 @@ public class Spu extends AggregateRoot<String> {
 
     /** 新增 SKU（只能通过根） */
     public Sku addSku(SkuId skuId, String skuName, Integer price, Integer num,
-                      String image, String attrText) {
-        Sku sku = new Sku(skuId, skuName, price, num, image, attrText, this);
+                      String image, String skuAttribute) {
+        LocalDateTime now = LocalDateTime.now();
+        Sku sku = new Sku(skuId, skuName, price, num, image, now, now, this.id, skuAttribute, SkuStatus.ACTIVE);
         skus.add(sku);
         return sku;
     }

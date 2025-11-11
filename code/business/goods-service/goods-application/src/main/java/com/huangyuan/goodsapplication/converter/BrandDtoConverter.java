@@ -12,10 +12,10 @@ public interface BrandDtoConverter {
     BrandDtoConverter INSTANCE = Mappers.getMapper(BrandDtoConverter.class);
 
     /* Domain → DTO */
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
-    BrandDto toDto(Brand domain);
+    @Mapping(target = "id", expression = "java(brand.getId().getValue())")
+    BrandDto toDto(Brand brand);
 
     /* DTO → Domain */
-    @Mapping(target = "id", expression = "java(new BrandId(dto.getId()))")
-    Brand toDomain(BrandDto dto);
+    @Mapping(target = "id", expression = "java(new BrandId(brandDto.getId()))")
+    Brand toDomain(BrandDto brandDto);
 }
