@@ -1,9 +1,40 @@
 package com.huangyuan.goodsdomain.service;
 
 import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
+import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
+import com.huangyuan.qingcommon.exception.BizException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface SkuAttributeDomainService {
-    SkuAttribute createSkuAttribute(String name, String options, Integer sort);
-    SkuAttribute updateSkuAttribute(Integer id, String name, String options, Integer sort);
-    SkuAttribute deleteSkuAttribute(Integer id);
+@Service
+@RequiredArgsConstructor
+public class SkuAttributeDomainService {
+
+    private final SkuAttributeRepository repository;
+
+    public SkuAttribute createSkuAttribute(String name, String options, Integer sort) {
+        if (repository.existsName(name)) {
+            throw new BizException("属性名称已存在");
+        }
+        return SkuAttribute.create(name, options, sort);
+    }
+
+    public SkuAttribute updateSkuAttribute(Integer id, String name, String options, Integer sort) {
+        if (name == null || name.isBlank()) {
+            throw new BizException("属性名不能为空");
+        }
+        SkuAttribute oldSkuAttribute = repository.find(new SkuAttributeId(id))
+                .orElseThrow(() -> new BizException("要修改的属性不存在"));
+        if (!oldSkuAttribute.getName().equals(name) && repository.existsName(name)) {
+            throw new BizException("要修改的属性名称已存在");
+        }
+        return SkuAttribute.update(new SkuAttributeId(id), name, options, sort);
+    }
+
+    public SkuAttribute deleteSkuAttribute(Integer id) {
+        repository.find(new SkuAttributeId(id))
+                .orElseThrow(() -> new BizException("要删除的属性不存在"));
+        return SkuAttribute.delete(new SkuAttributeId(id));
+    }
 }

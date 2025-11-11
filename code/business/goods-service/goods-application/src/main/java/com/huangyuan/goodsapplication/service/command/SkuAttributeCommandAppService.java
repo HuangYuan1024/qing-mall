@@ -1,8 +1,7 @@
-package com.huangyuan.goodsapplication.service.impl;
+package com.huangyuan.goodsapplication.service.command;
 
-import com.huangyuan.goodsapplication.command.ChangeSkuAttributeCmd;
-import com.huangyuan.goodsapplication.command.CreateSkuAttributeCmd;
-import com.huangyuan.goodsapplication.service.SkuAttributeCommandService;
+import com.huangyuan.goodsapplication.command.CreateSkuAttributeCommand;
+import com.huangyuan.goodsapplication.command.UpdateSkuAttributeCommand;
 import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import com.huangyuan.goodsdomain.service.SkuAttributeDomainService;
@@ -13,24 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SkuAttributeCommandServiceImpl implements SkuAttributeCommandService {
+public class SkuAttributeCommandAppService {
 
     private final SkuAttributeDomainService domainService;
     private final SkuAttributeRepository repository;
 
-    @Override
-    public void createSkuAttribute(CreateSkuAttributeCmd cmd) {
+    public void createSkuAttribute(CreateSkuAttributeCommand cmd) {
         SkuAttribute skuAttribute = domainService.createSkuAttribute(cmd.getName(), cmd.getOptions(), cmd.getSort());
         repository.save(skuAttribute);
     }
 
-    @Override
-    public void updateSkuAttribute(ChangeSkuAttributeCmd cmd) {
+    public void updateSkuAttribute(UpdateSkuAttributeCommand cmd) {
         SkuAttribute skuAttribute = domainService.updateSkuAttribute(cmd.getId(), cmd.getName(), cmd.getOptions(), cmd.getSort());
         repository.save(skuAttribute);
     }
 
-    @Override
     public void deleteSkuAttribute(Integer id) {
         SkuAttribute skuAttribute = domainService.deleteSkuAttribute(id);
         repository.delete(skuAttribute);

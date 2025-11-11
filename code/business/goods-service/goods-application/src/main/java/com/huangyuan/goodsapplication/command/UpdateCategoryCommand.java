@@ -7,11 +7,13 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class CreateSkuAttributeCmd implements Serializable {
+public class UpdateCategoryCommand implements Serializable {
+    @NotNull
+    private Integer id;
     @NotBlank
     private String name;
-    @NotBlank
-    private String options;
     @NotNull
     private Integer sort;
+    @NotNull
+    private Integer parentId;
 }

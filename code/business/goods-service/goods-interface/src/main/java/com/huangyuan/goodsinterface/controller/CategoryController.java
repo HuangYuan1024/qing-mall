@@ -1,8 +1,8 @@
 package com.huangyuan.goodsinterface.controller;
 
 import com.huangyuan.goodsapplication.dto.CategoryDto;
-import com.huangyuan.goodsapplication.service.CategoryCommandService;
-import com.huangyuan.goodsapplication.service.CategoryQueryService;
+import com.huangyuan.goodsapplication.service.command.CategoryCommandAppService;
+import com.huangyuan.goodsapplication.service.query.CategoryQueryAppService;
 import com.huangyuan.qingcommon.result.RespResult;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ import java.util.List;
 public class CategoryController {
 
 
-    private final CategoryCommandService commandService;
-    private final CategoryQueryService queryService;
+    private final CategoryCommandAppService commandService;
+    private final CategoryQueryAppService queryService;
 
     /**
      * 根据父ID查询子分类

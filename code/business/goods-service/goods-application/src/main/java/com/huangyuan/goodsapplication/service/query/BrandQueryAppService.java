@@ -1,10 +1,9 @@
-package com.huangyuan.goodsapplication.service.impl;
+package com.huangyuan.goodsapplication.service.query;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.converter.BrandDtoConverter;
 import com.huangyuan.goodsapplication.dto.BrandDto;
-import com.huangyuan.goodsapplication.service.BrandQueryService;
 import com.huangyuan.goodsdomain.aggregate.Brand;
 import com.huangyuan.goodsdomain.aggregate.BrandId;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BrandQueryServiceImpl implements BrandQueryService {
+public class BrandQueryAppService {
 
     private final BrandRepository repository;
     private final BrandDtoConverter converter = BrandDtoConverter.INSTANCE;
@@ -46,7 +45,6 @@ public class BrandQueryServiceImpl implements BrandQueryService {
         return applicationPage;
     }
 
-    @Override
     public PageDTO<BrandDto> pageBrands(Long pageNum, Long pageSize, BrandDto brand) {
         Page<Brand> poPage;
 
@@ -59,7 +57,6 @@ public class BrandQueryServiceImpl implements BrandQueryService {
         return getBrandDtoPageDto(poPage);
     }
 
-    @Override
     public List<BrandDto> listBrandsByCategoryId(Integer categoryId) {
         return repository.listByCategoryId(categoryId).stream()
                 .map(converter::toDto)

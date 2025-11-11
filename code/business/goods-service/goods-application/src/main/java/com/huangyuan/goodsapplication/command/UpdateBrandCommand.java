@@ -7,7 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class CreateBrandCmd implements Serializable {
+public class UpdateBrandCommand implements Serializable {
+    @NotNull
+    private Integer id;
     @NotBlank
     private String name;
     @NotBlank

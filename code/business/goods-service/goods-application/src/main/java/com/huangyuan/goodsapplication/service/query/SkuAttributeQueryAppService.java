@@ -1,8 +1,7 @@
-package com.huangyuan.goodsapplication.service.impl;
+package com.huangyuan.goodsapplication.service.query;
 
 import com.huangyuan.goodsapplication.converter.SkuAttributeDtoConverter;
 import com.huangyuan.goodsapplication.dto.SkuAttributeDto;
-import com.huangyuan.goodsapplication.service.SkuAttributeQueryService;
 import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsdomain.repository.SkuAttributeRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,26 +11,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SkuAttributeQueryServiceImpl implements SkuAttributeQueryService {
+public class SkuAttributeQueryAppService {
 
     private final SkuAttributeRepository repository;
     private final SkuAttributeDtoConverter converter = SkuAttributeDtoConverter.INSTANCE;
 
-    @Override
     public List<SkuAttributeDto> listSkuAttributes() {
         return repository.listAll().stream()
                 .map(converter::toDto)
                 .toList();
     }
 
-    @Override
     public List<SkuAttributeDto> listSkuAttributesByCategoryId(Integer categoryId) {
         return repository.listByCategoryId(categoryId).stream()
                 .map(converter::toDto)
                 .toList();
     }
 
-    @Override
     public SkuAttributeDto getSkuAttribute(Integer id) {
         return repository.find(new SkuAttributeId(id))
                 .map(converter::toDto)

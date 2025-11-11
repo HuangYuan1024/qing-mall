@@ -7,9 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class ChangeSkuAttributeCmd implements Serializable {
-    @NotNull
-    private Integer id;
+public class CreateSkuAttributeCommand implements Serializable {
     @NotBlank
     private String name;
     @NotBlank

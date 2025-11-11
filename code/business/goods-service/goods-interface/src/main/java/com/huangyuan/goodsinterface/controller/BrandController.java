@@ -1,11 +1,11 @@
 package com.huangyuan.goodsinterface.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.huangyuan.goodsapplication.command.ChangeBrandCmd;
-import com.huangyuan.goodsapplication.command.CreateBrandCmd;
+import com.huangyuan.goodsapplication.command.CreateBrandCommand;
+import com.huangyuan.goodsapplication.command.UpdateBrandCommand;
 import com.huangyuan.goodsapplication.dto.BrandDto;
-import com.huangyuan.goodsapplication.service.BrandCommandService;
-import com.huangyuan.goodsapplication.service.BrandQueryService;
+import com.huangyuan.goodsapplication.service.command.BrandCommandAppService;
+import com.huangyuan.goodsapplication.service.query.BrandQueryAppService;
 import com.huangyuan.qingcommon.result.RespResult;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,15 +19,15 @@ import java.util.List;
 @RequestMapping("/brand")
 public class BrandController {
 
-    private final BrandCommandService commandService;
-    private final BrandQueryService queryService;
+    private final BrandCommandAppService commandService;
+    private final BrandQueryAppService queryService;
 
     /**
      *  增加品牌
      */
     @PostMapping("/addBrand")
     @Operation(summary = "添加品牌")
-    public RespResult<Void> create(@Valid @RequestBody CreateBrandCmd cmd) {
+    public RespResult<Void> create(@Valid @RequestBody CreateBrandCommand cmd) {
         commandService.createBrand(cmd);
         return RespResult.ok();
     }
@@ -43,7 +43,7 @@ public class BrandController {
     // 修改实现
     @PutMapping("/updateBrand")
     @Operation(summary = "修改品牌")
-    public RespResult<Void> updateBrand(@Valid @RequestBody ChangeBrandCmd cmd){
+    public RespResult<Void> updateBrand(@Valid @RequestBody UpdateBrandCommand cmd){
         commandService.updateBrand(cmd);
         return RespResult.ok();
     }

@@ -7,15 +7,11 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public class ChangeBrandCmd implements Serializable {
-    @NotNull
-    private Integer id;
+public class CreateCategoryCommand implements Serializable {
     @NotBlank
     private String name;
-    @NotBlank
-    private String image;
-    @NotBlank
-    private String initial;
     @NotNull
     private Integer sort;
+    @NotNull
+    private Integer parentId;
 }

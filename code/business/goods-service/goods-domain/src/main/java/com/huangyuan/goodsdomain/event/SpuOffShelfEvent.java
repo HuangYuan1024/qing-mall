@@ -7,12 +7,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SpuOnShelfEvent extends DomainEvent {
-
+public class SpuOffShelfEvent extends DomainEvent {
     private final SpuId spuId;
+
+    private final String reason;
 
     @Override
     public String getEventType() {
-        return "SpuOnShelfEvent";
+        return "";
     }
 }

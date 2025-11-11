@@ -1,8 +1,7 @@
-package com.huangyuan.goodsapplication.service.impl;
+package com.huangyuan.goodsapplication.service.command;
 
-import com.huangyuan.goodsapplication.command.ChangeCategoryCmd;
-import com.huangyuan.goodsapplication.command.CreateCategoryCmd;
-import com.huangyuan.goodsapplication.service.CategoryCommandService;
+import com.huangyuan.goodsapplication.command.CreateCategoryCommand;
+import com.huangyuan.goodsapplication.command.UpdateCategoryCommand;
 import com.huangyuan.goodsdomain.aggregate.Category;
 import com.huangyuan.goodsdomain.repository.CategoryRepository;
 import com.huangyuan.goodsdomain.service.CategoryDomainService;
@@ -13,24 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CategoryCommandServiceImpl implements CategoryCommandService {
+public class CategoryCommandAppService {
 
     private final CategoryDomainService domainService;
     private final CategoryRepository repository;
 
-    @Override
-    public void createCategory(CreateCategoryCmd cmd) {
+    public void createCategory(CreateCategoryCommand cmd) {
         Category category = domainService.createCategory(cmd.getName(), cmd.getSort(), cmd.getParentId());
         repository.save(category);
     }
 
-    @Override
-    public void updateCategory(ChangeCategoryCmd cmd) {
+    public void updateCategory(UpdateCategoryCommand cmd) {
         Category category = domainService.updateCategory(cmd.getId(), cmd.getName(), cmd.getSort(), cmd.getParentId());
         repository.save(category);
     }
 
-    @Override
     public void deleteCategory(Integer id) {
         Category category = domainService.deleteCategory(id);
         repository.delete(category);
