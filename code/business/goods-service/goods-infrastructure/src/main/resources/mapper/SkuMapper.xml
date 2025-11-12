@@ -2,4 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huangyuan.goodsinfrastructure.persistence.mapper.SkuMapper">
 
+    <select id="existsById"
+            resultType="boolean">
+        SELECT COUNT(1)
+        FROM sku
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectBySpuId"
+            resultType="com.huangyuan.goodsinfrastructure.persistence.po.SkuPo">
+        SELECT *
+        FROM sku
+        WHERE spu_id = #{spuId}
+    </select>
+
 </mapper>

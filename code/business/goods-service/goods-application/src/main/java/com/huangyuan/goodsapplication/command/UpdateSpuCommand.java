@@ -1,23 +1,15 @@
 package com.huangyuan.goodsapplication.command;
 
+import com.huangyuan.goodsapplication.dto.SkuDto;
+import com.huangyuan.goodsapplication.dto.SpuDto;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class UpdateSpuCommand {
 
-    @NotBlank
-    private final String name;
-    @NotBlank
-    private final String intro;
-    @NotNull
-    private final Integer brandId;
+    SpuDto spu;
 
-    public void validate() {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("商品名称不能为空");
-        }
-    }
+    List<SkuDto> skus;
 }

@@ -25,8 +25,6 @@ public class SpuCommandAppService {
     private final SpuDtoConverter converter;
 
     public SpuDto createSpu(CreateSpuCommand command) {
-        // 1. 验证Command格式
-        command.validate();
 
         SimpleIdGenerator idGenerator = new SimpleIdGenerator();
 
@@ -71,7 +69,7 @@ public class SpuCommandAppService {
         command.validate();
 
         // 获取聚合根
-        Spu spu = spuRepository.findById(new SpuId(spuId))
+        Spu spu = spuRepository.find(spuId)
                 .orElseThrow(() -> new BizException("商品不存在"));
 
         // 转换为领域对象
