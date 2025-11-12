@@ -7,10 +7,7 @@ import com.huangyuan.goodsdomain.event.SpuOnShelfEvent;
 import com.huangyuan.goodsdomain.event.SpuUpdatedEvent;
 import com.huangyuan.qingcommon.domain.AggregateRoot;
 import com.huangyuan.qingcommon.exception.BizException;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +16,7 @@ import java.util.List;
 /**
  * 商品聚合根
  */
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 防止外部 new
 public class Spu extends AggregateRoot<String> {
@@ -220,4 +217,8 @@ public class Spu extends AggregateRoot<String> {
     }
 
 
+    @Override
+    public String getIdValue() {
+        return id.value();
+    }
 }

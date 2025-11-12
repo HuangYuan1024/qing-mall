@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class SpuRepositoryImpl implements SpuRepository {
 
     private final SpuMapper mapper;
-    private final SpuPoConverter converter = SpuPoConverter.INSTANCE;
+    private final SpuPoConverter converter;
 
     @Override
     public void save(Spu spu) {

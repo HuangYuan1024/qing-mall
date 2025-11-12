@@ -2,14 +2,14 @@ package com.huangyuan.goodsdomain.aggregate;
 
 import com.huangyuan.qingcommon.domain.Entity;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
  * SKU 实体（生命周期受 SPU 控制）
  */
-@Getter
+@Data
 @AllArgsConstructor
 public class Sku extends Entity<String> {
 
@@ -30,5 +30,10 @@ public class Sku extends Entity<String> {
 
     boolean isActive() {
         return status == SkuStatus.ACTIVE;
+    }
+
+    @Override
+    public String getIdValue() {
+        return id.value();
     }
 }

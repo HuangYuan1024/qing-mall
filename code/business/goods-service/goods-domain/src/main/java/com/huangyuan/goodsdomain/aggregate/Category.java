@@ -1,12 +1,12 @@
 package com.huangyuan.goodsdomain.aggregate;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * Category 聚合根
  */
-@Getter
+@Data
 @AllArgsConstructor
 public class Category {
 
