@@ -121,7 +121,7 @@ public class Spu extends AggregateRoot<String> {
      * @return 商品聚合根
      */
     public static Spu createSpu(SpuId id, String name, String intro, BrandId brandId,
-                                CategoryPath categoryPath, String afterSalesService,
+                                CategoryPath categoryPath, ImageList images, String afterSalesService,
                                 Content content, AttributeList attributeList,
                                 List<SkuCreationParam> skuParams) {
 
@@ -149,7 +149,7 @@ public class Spu extends AggregateRoot<String> {
         spu.afterSalesService = afterSalesService;
         spu.content = content != null ? content : Content.empty();
         spu.attributeList = attributeList != null ? attributeList : AttributeList.empty();
-        spu.images = ImageList.empty();
+        spu.images = images != null ? images : ImageList.empty();
         spu.marketable = Marketable.DOWN;
         spu.deleted = Deleted.NO;
         spu.auditStatus = AuditStatus.PENDING;
@@ -157,7 +157,7 @@ public class Spu extends AggregateRoot<String> {
         // 创建初始SKU
         if (skuParams != null && !skuParams.isEmpty()) {
             for (SkuCreationParam param : skuParams) {
-                spu.addSku(param.getSkuId(), param.skuName(), param.price(), param.stock(), param.image(), param.attrText());
+                spu.addSku(param.getSkuId(), param.name(), param.price(), param.num(), param.image(), param.attribute());
             }
         }
 

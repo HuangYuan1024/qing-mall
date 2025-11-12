@@ -1,9 +1,9 @@
 package com.huangyuan.goodsapplication.service.command;
 
-import com.huangyuan.goodsapplication.command.CreateSkuCommand;
 import com.huangyuan.goodsapplication.command.CreateSpuCommand;
 import com.huangyuan.goodsapplication.command.UpdateSpuCommand;
 import com.huangyuan.goodsapplication.converter.SpuDtoConverter;
+import com.huangyuan.goodsapplication.dto.SkuDto;
 import com.huangyuan.goodsapplication.dto.SpuDto;
 import com.huangyuan.goodsdomain.aggregate.*;
 import com.huangyuan.goodsdomain.repository.SpuRepository;
@@ -28,31 +28,32 @@ public class SpuCommandAppService {
 
         SimpleIdGenerator idGenerator = new SimpleIdGenerator();
 
-        // 2. 转换为领域对象
+        // 转换为领域对象
         SpuId spuId = new SpuId(idGenerator.generateId().toString());
-        BrandId brandId = new BrandId(command.getBrandId());
-        CategoryPath categoryPath = new CategoryPath(command.getCategoryIds().get(0), command.getCategoryIds().get(1), command.getCategoryIds().get(2));
-        Content content = new Content(command.getContentHtml());
-        AttributeList attributeList = AttributeList.fromMap(command.getAttributes());
+        BrandId brandId = new BrandId(command.getSpu().getBrandId());
+        CategoryPath categoryPath = new CategoryPath(command.getSpu().getCategoryOneId(), command.getSpu().getCategoryTwoId(), command.getSpu().getCategoryThreeId());
+        Content content = new Content(command.getSpu().getContent());
+        AttributeList attributeList = new  AttributeList(command.getSpu().getAttributeList());
         List<SkuCreationParam> skuParams = new ArrayList<>();
-        for (CreateSkuCommand skuCommand : command.getSkus()) {
+        for (SkuDto sku : command.getSkus()) {
             skuParams.add(new SkuCreationParam(
-                    skuCommand.getSkuName(),
-                    skuCommand.getPrice(),
-                    skuCommand.getStock(),
-                    skuCommand.getImage(),
-                    skuCommand.getAttrText()
+                    sku.getName(),
+                    sku.getPrice(),
+                    sku.getNum(),
+                    sku.getImage(),
+                    sku.getSkuAttribute()
             ));
         }
 
-        // 3. 调用领域工厂方法创建聚合根
+        // 调用领域工厂方法创建聚合根
         Spu spu = Spu.createSpu(
                 spuId,
-                command.getName(),
-                command.getIntro(),
+                command.getSpu().getName(),
+                command.getSpu().getIntro(),
                 brandId,
                 categoryPath,
-                command.getAfterSalesService(),
+                ImageList.create(command.getSpu().getImages()),
+                command.getSpu().getAfterSalesService(),
                 content,
                 attributeList,
                 skuParams
@@ -66,25 +67,24 @@ public class SpuCommandAppService {
     }
 
     public void updateSpu(String spuId, UpdateSpuCommand command) {
-        command.validate();
 
         // 获取聚合根
         Spu spu = spuRepository.find(spuId)
                 .orElseThrow(() -> new BizException("商品不存在"));
 
         // 转换为领域对象
-        BrandId brandId = new BrandId(command.getBrandId());
-        CategoryPath categoryPath = new CategoryPath(command.getCategoryIds());
-        Content content = new Content(command.getContentHtml());
-        AttributeList attributeList = AttributeList.fromMap(command.getAttributes());
+        BrandId brandId = new BrandId(command.getSpu().getBrandId());
+        CategoryPath categoryPath = new CategoryPath(command.getSpu().getCategoryOneId(), command.getSpu().getCategoryTwoId(), command.getSpu().getCategoryThreeId());
+        Content content = new Content(command.getSpu().getContent());
+        AttributeList attributeList = new AttributeList(command.getSpu().getAttributeList());
 
         // 调用聚合根方法
         spu.updateSpu(
-                command.getName(),
-                command.getIntro(),
+                command.getSpu().getName(),
+                command.getSpu().getIntro(),
                 brandId,
                 categoryPath,
-                command.getAfterSalesService(),
+                command.getSpu().getAfterSalesService(),
                 content,
                 attributeList
         );
