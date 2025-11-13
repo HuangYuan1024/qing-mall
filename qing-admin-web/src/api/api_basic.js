@@ -41,7 +41,7 @@ export default {
     },
     //商品分类添加
     categoryAddApi: (params) => {
-        return API.POST(`/category`, params)
+        return API.POST(`/category/addCategory`, params)
     },
     //品牌下拉
     brandCategoryApi: (params) => {

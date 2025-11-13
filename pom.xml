@@ -212,14 +212,6 @@
         <module>code/foundation/qing-spring-boot-starter-idempotent</module>
         <module>code/foundation/qing-sdk-openfeign</module>
 
-<!--        &lt;!&ndash; 用户服务模块 &ndash;&gt;-->
-<!--        <module>code/business/user-service/user-application</module>-->
-<!--        <module>code/business/user-service/user-domain</module>-->
-<!--        <module>code/business/user-service/user-infrastructure</module>-->
-<!--        <module>code/business/user-service/user-integration</module>-->
-<!--        <module>code/business/user-service/user-interface</module>-->
-<!--        <module>code/business/user-service/user-boot</module>-->
-
         <!-- 商品服务模块 -->
         <module>code/business/goods-service/goods-boot</module>
         <module>code/business/goods-service/goods-interface</module>
@@ -228,26 +220,13 @@
         <module>code/business/goods-service/goods-domain</module>
         <module>code/business/goods-service/goods-infrastructure</module>
 
-<!--        &lt;!&ndash; 内容服务模块 &ndash;&gt;-->
-<!--        <module>code/business/content-service/content-application</module>-->
-<!--        <module>code/business/content-service/content-domain</module>-->
-<!--        <module>code/business/content-service/content-infrastructure</module>-->
-<!--        <module>code/business/content-service/content-interface</module>-->
-<!--        <module>code/business/content-service/content-boot</module>-->
-
-<!--        &lt;!&ndash; 订单服务模块 &ndash;&gt;-->
-<!--        <module>code/business/order-service/order-application</module>-->
-<!--        <module>code/business/order-service/order-domain</module>-->
-<!--        <module>code/business/order-service/order-infrastructure</module>-->
-<!--        <module>code/business/order-service/order-interface</module>-->
-<!--        <module>code/business/order-service/order-boot</module>-->
-
-<!--        &lt;!&ndash; 营销服务模块 &ndash;&gt;-->
-<!--        <module>code/business/sale-service/sale-application</module>-->
-<!--        <module>code/business/sale-service/sale-domain</module>-->
-<!--        <module>code/business/sale-service/sale-infrastructure</module>-->
-<!--        <module>code/business/sale-service/sale-interface</module>-->
-<!--        <module>code/business/sale-service/sale-boot</module>-->
+        <!-- 文件服务模块 -->
+        <module>code/business/file-service/file-boot</module>
+        <module>code/business/file-service/file-interface</module>
+        <module>code/business/file-service/file-integration</module>
+        <module>code/business/file-service/file-application</module>
+        <module>code/business/file-service/file-domain</module>
+        <module>code/business/file-service/file-infrastructure</module>
 
         <!--        &lt;!&ndash; 平台服务模块 &ndash;&gt;-->
         <!--        <module>code/platform/gateway-service</module>-->

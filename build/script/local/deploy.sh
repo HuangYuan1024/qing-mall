@@ -30,7 +30,7 @@ echo "构建基础镜像..."
 
 # 清除旧service镜像（强制）
 echo "清除旧service镜像..."
-docker image rm -f qing/goods-service:latest || true
+#docker image rm -f qing/goods-service:latest || true
 
 # 构建所有服务
 echo "🔨 构建所有服务..."
