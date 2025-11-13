@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @AllArgsConstructor
-public class Sku extends Entity<String> {
+public class Sku extends Entity<SkuId> {
 
     private final SkuId id;
     private final String name;
@@ -30,10 +30,5 @@ public class Sku extends Entity<String> {
 
     boolean isActive() {
         return status == SkuStatus.ACTIVE;
-    }
-
-    @Override
-    public String getIdValue() {
-        return id.value();
     }
 }

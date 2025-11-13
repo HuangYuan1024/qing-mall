@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.huangyuan.fileboot", "com.huangyuan.fileinterface", "com.huangyuan.qingspringbootstarterweb"})
+@ComponentScan(basePackages = {"com.huangyuan.fileboot", "com.huangyuan.fileinterface", "com.huangyuan.fileapplication", "com.huangyuan.filedomain", "com.huangyuan.fileinfrastructure", "com.huangyuan.qingspringbootstarterweb"})
 public class FileBootApplication {
 
     public static void main(String[] args) {

@@ -11,7 +11,7 @@ public abstract class Entity<T extends Serializable> implements Serializable {
     /**
      * 子类必须实现：返回业务唯一标识
      */
-    public abstract T getIdValue();
+    public abstract T getId();
 
     /**
      * 相等性只比较 ID；子类可重写更严格规则
@@ -20,11 +20,11 @@ public abstract class Entity<T extends Serializable> implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Entity<?> entity)) return false;
-        return getIdValue() != null && getIdValue().equals(entity.getIdValue());
+        return getId() != null && getId().equals(entity.getId());
     }
 
     @Override
     public int hashCode() {
-        return getIdValue() == null ? 0 : getIdValue().hashCode();
+        return getId() == null ? 0 : getId().hashCode();
     }
 }

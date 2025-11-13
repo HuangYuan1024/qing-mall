@@ -40,6 +40,18 @@
             <artifactId>file-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.huangyuan</groupId>
+            <artifactId>file-application</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huangyuan</groupId>
+            <artifactId>file-infrastructure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

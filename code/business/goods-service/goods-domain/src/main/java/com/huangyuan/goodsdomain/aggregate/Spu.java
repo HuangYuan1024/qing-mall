@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 防止外部 new
-public class Spu extends AggregateRoot<String> {
+public class Spu extends AggregateRoot<SpuId> {
 
     /* ========== 基础属性 ========== */
     private SpuId id;
@@ -214,11 +214,5 @@ public class Spu extends AggregateRoot<String> {
 
         // 注册更新事件
         registerEvent(new SpuUpdatedEvent(this.id, this.name, this.brandId, this.categoryPath));
-    }
-
-
-    @Override
-    public String getIdValue() {
-        return id.value();
     }
 }
