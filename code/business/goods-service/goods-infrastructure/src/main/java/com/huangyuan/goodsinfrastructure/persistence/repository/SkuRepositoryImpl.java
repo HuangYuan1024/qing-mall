@@ -3,11 +3,18 @@ package com.huangyuan.goodsinfrastructure.persistence.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.huangyuan.goodsdomain.aggregate.BrandId;
+import com.huangyuan.goodsdomain.aggregate.CategoryPath;
+import com.huangyuan.goodsdomain.aggregate.ImageList;
 import com.huangyuan.goodsdomain.aggregate.Sku;
 import com.huangyuan.goodsdomain.repository.SkuRepository;
 import com.huangyuan.goodsinfrastructure.persistence.converter.SkuPoConverter;
+import com.huangyuan.goodsinfrastructure.persistence.mapper.BrandMapper;
+import com.huangyuan.goodsinfrastructure.persistence.mapper.CategoryMapper;
 import com.huangyuan.goodsinfrastructure.persistence.mapper.SkuMapper;
+import com.huangyuan.goodsinfrastructure.persistence.mapper.SpuMapper;
 import com.huangyuan.goodsinfrastructure.persistence.po.SkuPo;
+import com.huangyuan.goodsinfrastructure.persistence.po.SpuPo;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,11 +28,20 @@ import java.util.stream.Collectors;
 public class SkuRepositoryImpl implements SkuRepository {
 
     private final SkuMapper mapper;
-    private final SkuPoConverter converter = SkuPoConverter.INSTANCE;
+    private final SpuMapper spuMapper;
+    private final CategoryMapper categoryMapper;
+    private final BrandMapper brandMapper;
+    private final SkuPoConverter converter;
 
     @Override
     public void save(Sku sku) {
-        SkuPo po = converter.toPo(sku);
+        SpuPo spuPo = spuMapper.selectById(sku.getSpuId().value());
+        ImageList images = ImageList.create(spuPo.getImages());
+        CategoryPath categoryPath = new CategoryPath(spuPo.getCategoryOneId(), spuPo.getCategoryTwoId(), spuPo.getCategoryThreeId());
+        String categoryName = categoryMapper.selectById(categoryPath.threeId()).getName();
+        BrandId brandId = new BrandId(spuPo.getBrandId());
+        String brandName = brandMapper.selectById(brandId.value()).getName();
+        SkuPo po = converter.toPo(sku, images, categoryPath, categoryName, brandId, brandName);
         if (mapper.existsById(po.getId())) {
             mapper.updateById(po);
         } else {

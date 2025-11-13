@@ -18,7 +18,7 @@ import java.util.Optional;
 public class CategoryRepositoryImpl implements CategoryRepository {
 
     private final CategoryMapper mapper;
-    private final CategoryPoConverter converter = CategoryPoConverter.INSTANCE;
+    private final CategoryPoConverter converter;
 
     @Override
     public Category save(Category category) {

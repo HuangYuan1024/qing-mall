@@ -33,7 +33,7 @@ public class Spu extends AggregateRoot<String> {
     private AttributeList attributeList;  // 规格模板
     private Marketable marketable;     // 枚举：是否上架
     private Deleted deleted;        // 枚举：是否删除
-    private AuditStatus auditStatus;    // 枚举：审核状态
+    private AuditStatus status;    // 枚举：审核状态
 
     /* ========== 内部实体 ========== */
     private final List<Sku> skus = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Spu extends AggregateRoot<String> {
         this.categoryPath = categoryPath;
         this.marketable = Marketable.DOWN;
         this.deleted = Deleted.NO;
-        this.auditStatus = AuditStatus.PENDING;
+        this.status = AuditStatus.PENDING;
     }
 
     /*-----------------------------------------------------------
@@ -58,7 +58,7 @@ public class Spu extends AggregateRoot<String> {
         if (deleted.isYes()) {
             throw new BizException("已删除不能上架");
         }
-        if (auditStatus != AuditStatus.PASSED) {
+        if (status != AuditStatus.PASSED) {
             throw new BizException("未审核通过不能上架");
         }
         if (skus.isEmpty()) {
@@ -149,7 +149,7 @@ public class Spu extends AggregateRoot<String> {
         spu.images = images != null ? images : ImageList.empty();
         spu.marketable = Marketable.DOWN;
         spu.deleted = Deleted.NO;
-        spu.auditStatus = AuditStatus.PENDING;
+        spu.status = AuditStatus.PENDING;
 
         // 创建初始SKU
         if (skuParams != null && !skuParams.isEmpty()) {
@@ -207,7 +207,7 @@ public class Spu extends AggregateRoot<String> {
         // 业务规则：修改基础信息后，如果原已上架，需要下架并重新审核
         if (needReaudit) {
             this.marketable = Marketable.DOWN;
-            this.auditStatus = AuditStatus.PENDING;
+            this.status = AuditStatus.PENDING;
             // 注册下架事件
             registerEvent(new SpuOffShelfEvent(this.id, "基础信息变更自动下架"));
         }

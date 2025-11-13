@@ -1,26 +1,50 @@
 package com.huangyuan.goodsapplication.converter;
 
 import com.huangyuan.goodsapplication.dto.SpuDto;
-import com.huangyuan.goodsdomain.aggregate.Spu;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.huangyuan.goodsdomain.aggregate.*;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface SpuDtoConverter {
+import java.util.List;
 
-    SpuDtoConverter INSTANCE = Mappers.getMapper(SpuDtoConverter.class);
+@NoArgsConstructor
+@Component
+public final class SpuDtoConverter {
+    public Spu toDomain(SpuDto spuDto, List<SkuCreationParam> skuParams) {
+        if (spuDto == null) return null;
 
-    @Mapping(target = "id", expression = "java(spu.getId().getValue())")
-    @Mapping(target = "brandId", expression = "java(spu.getBrandId().getValue())")
-    @Mapping(target = "categoryOneId", expression = "java(spu.getCategoryPath().getOneId())")
-    @Mapping(target = "categoryTwoId", expression = "java(spu.getCategoryPath().getTwoId())")
-    @Mapping(target = "categoryThreeId", expression = "java(spu.getCategoryPath().getThreeId())")
-    @Mapping(target = "images", expression = "java(String.join(\",\", spu.getImages().getUrls()))")
-    @Mapping(target = "content", expression = "java(spu.getContent().getHtml())")
-    @Mapping(target = "attributeList", expression = "java(spu.getAttributeList().getJson())")
-    @Mapping(target = "isMarketable", expression = "java(spu.getMarketable().getCode())")
-    @Mapping(target = "isDelete", expression = "java(spu.getDeleted().getCode())")
-    @Mapping(target = "status", expression = "java(spu.getAuditStatus().getCode())")
-    SpuDto toDto(Spu spu);
+        return Spu.createSpu(
+                new SpuId(spuDto.getId()),
+                spuDto.getName(),
+                spuDto.getIntro(),
+                new BrandId(spuDto.getBrandId()),
+                new CategoryPath(spuDto.getCategoryOneId(), spuDto.getCategoryTwoId(), spuDto.getCategoryThreeId()),
+                ImageList.create(spuDto.getImages()),
+                spuDto.getAfterSalesService(),
+                new Content(spuDto.getContent()),
+                new AttributeList(spuDto.getAttributeList()),
+                skuParams
+        );
+    }
+
+    public SpuDto toDto(Spu spu) {
+        if (spu == null) return null;
+
+        return new SpuDto(
+                spu.getId().getValue(),
+                spu.getName(),
+                spu.getIntro(),
+                spu.getBrandId().value(),
+                spu.getCategoryPath().oneId(),
+                spu.getCategoryPath().twoId(),
+                spu.getCategoryPath().threeId(),
+                String.join(",", spu.getImages().urls()),
+                spu.getAfterSalesService(),
+                spu.getContent().html(),
+                spu.getAttributeList().json(),
+                spu.getMarketable().getCode(),
+                spu.getDeleted().getCode(),
+                spu.getStatus().getCode()
+        );
+    }
 }

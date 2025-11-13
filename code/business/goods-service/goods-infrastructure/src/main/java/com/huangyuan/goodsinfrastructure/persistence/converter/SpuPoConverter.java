@@ -53,7 +53,7 @@ public final class SpuPoConverter {
         po.setAttributeList(domain.getAttributeList().json());
         po.setIsMarketable(domain.getMarketable().getCode());
         po.setIsDelete(domain.getDeleted().getCode());
-        po.setStatus(domain.getAuditStatus().getCode());
+        po.setStatus(domain.getStatus().getCode());
         return po;
     }
 }

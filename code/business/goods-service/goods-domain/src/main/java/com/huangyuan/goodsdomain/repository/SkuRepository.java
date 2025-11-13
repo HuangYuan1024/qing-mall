@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SkuRepository {
+
     void save(Sku sku);
+
     Optional<Sku> find(String id);
     void delete(Sku sku);
     boolean existsName(String name);

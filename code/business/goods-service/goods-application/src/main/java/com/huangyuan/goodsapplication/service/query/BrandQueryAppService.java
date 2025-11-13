@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class BrandQueryAppService {
 
     private final BrandRepository repository;
-    private final BrandDtoConverter converter = BrandDtoConverter.INSTANCE;
+    private final BrandDtoConverter converter;
 
     public List<BrandDto> listBrands(BrandDto brand) {
         if (brand == null) {

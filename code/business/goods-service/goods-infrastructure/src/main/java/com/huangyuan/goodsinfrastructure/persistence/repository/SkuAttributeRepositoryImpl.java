@@ -18,7 +18,7 @@ import java.util.Optional;
 public class SkuAttributeRepositoryImpl implements SkuAttributeRepository {
 
     private final SkuAttributeMapper mapper;
-    private final SkuAttributePoConverter converter = SkuAttributePoConverter.INSTANCE;
+    private final SkuAttributePoConverter converter;
 
     @Override
     public void save(SkuAttribute skuAttribute) {

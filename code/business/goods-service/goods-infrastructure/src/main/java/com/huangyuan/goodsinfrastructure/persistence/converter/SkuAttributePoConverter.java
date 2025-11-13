@@ -1,19 +1,30 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
 import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
+import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsinfrastructure.persistence.po.SkuAttributePo;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import lombok.NoArgsConstructor;
 
-@Mapper
-public interface SkuAttributePoConverter {
+@NoArgsConstructor
+public final class SkuAttributePoConverter {
 
-    SkuAttributePoConverter INSTANCE = Mappers.getMapper(SkuAttributePoConverter.class);
+    public SkuAttribute toDomain(SkuAttributePo po) {
+        if (po == null) return null;
+        return new SkuAttribute(
+                new SkuAttributeId(po.getId()),
+                po.getName(),
+                po.getOptions(),
+                po.getSort()
+        );
+    }
 
-    @Mapping(target = "id", expression = "java(new SkuAttributeId(po.getId()))")
-    SkuAttribute toDomain(SkuAttributePo po);
-
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
-    SkuAttributePo toPo(SkuAttribute domain);
+    public SkuAttributePo toPo(SkuAttribute domain) {
+        if (domain == null) return null;
+        return new SkuAttributePo(
+                domain.getId().value(),
+                domain.getName(),
+                domain.getOptions(),
+                domain.getSort()
+        );
+    }
 }

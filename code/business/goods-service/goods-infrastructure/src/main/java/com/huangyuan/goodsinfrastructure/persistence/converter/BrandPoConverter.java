@@ -1,21 +1,30 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
 import com.huangyuan.goodsdomain.aggregate.Brand;
+import com.huangyuan.goodsdomain.aggregate.BrandId;
 import com.huangyuan.goodsinfrastructure.persistence.po.BrandPo;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import lombok.NoArgsConstructor;
 
-@Mapper
-public interface BrandPoConverter {
-
-    BrandPoConverter INSTANCE = Mappers.getMapper(BrandPoConverter.class);
-
-    /* ① Po → Domain */
-    @Mapping(target = "id", expression = "java(new BrandId(po.getId()))")
-    Brand toDomain(BrandPo po);
-
-    /* ② Domain → Po */
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
-    BrandPo toPo(Brand domain);
+@NoArgsConstructor
+public final class BrandPoConverter {
+    public Brand toDomain(BrandPo po) {
+        if (po == null) return null;
+        return new Brand(
+                new BrandId(po.getId()),
+                po.getName(),
+                po.getImage(),
+                po.getInitial(),
+                po.getSort()
+        );
+    }
+    public BrandPo toPo(Brand domain) {
+        if (domain == null) return null;
+        return new BrandPo(
+                domain.getId().value(),
+                domain.getName(),
+                domain.getImage(),
+                domain.getInitial(),
+                domain.getSort()
+        );
+    }
 }

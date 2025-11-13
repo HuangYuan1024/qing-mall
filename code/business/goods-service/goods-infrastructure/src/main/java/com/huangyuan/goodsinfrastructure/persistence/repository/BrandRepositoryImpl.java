@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class BrandRepositoryImpl implements BrandRepository {
 
     private final BrandMapper mapper;
-    private final BrandPoConverter converter = BrandPoConverter.INSTANCE;
+    private final BrandPoConverter converter;
 
     @Override
     public Brand save(Brand brand) {

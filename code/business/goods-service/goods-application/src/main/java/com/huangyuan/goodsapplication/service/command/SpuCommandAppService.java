@@ -27,13 +27,9 @@ public class SpuCommandAppService {
     public SpuDto createSpu(CreateSpuCommand command) {
 
         SimpleIdGenerator idGenerator = new SimpleIdGenerator();
+        command.getSpu().setId(idGenerator.generateId().toString());
 
         // 转换为领域对象
-        SpuId spuId = new SpuId(idGenerator.generateId().toString());
-        BrandId brandId = new BrandId(command.getSpu().getBrandId());
-        CategoryPath categoryPath = new CategoryPath(command.getSpu().getCategoryOneId(), command.getSpu().getCategoryTwoId(), command.getSpu().getCategoryThreeId());
-        Content content = new Content(command.getSpu().getContent());
-        AttributeList attributeList = new  AttributeList(command.getSpu().getAttributeList());
         List<SkuCreationParam> skuParams = new ArrayList<>();
         for (SkuDto sku : command.getSkus()) {
             skuParams.add(new SkuCreationParam(
@@ -45,19 +41,7 @@ public class SpuCommandAppService {
             ));
         }
 
-        // 调用领域工厂方法创建聚合根
-        Spu spu = Spu.createSpu(
-                spuId,
-                command.getSpu().getName(),
-                command.getSpu().getIntro(),
-                brandId,
-                categoryPath,
-                ImageList.create(command.getSpu().getImages()),
-                command.getSpu().getAfterSalesService(),
-                content,
-                attributeList,
-                skuParams
-        );
+        Spu spu = converter.toDomain(command.getSpu(), skuParams);
 
         // 4. 保存
         spuRepository.save(spu);
@@ -72,21 +56,15 @@ public class SpuCommandAppService {
         Spu spu = spuRepository.find(spuId)
                 .orElseThrow(() -> new BizException("商品不存在"));
 
-        // 转换为领域对象
-        BrandId brandId = new BrandId(command.getSpu().getBrandId());
-        CategoryPath categoryPath = new CategoryPath(command.getSpu().getCategoryOneId(), command.getSpu().getCategoryTwoId(), command.getSpu().getCategoryThreeId());
-        Content content = new Content(command.getSpu().getContent());
-        AttributeList attributeList = new AttributeList(command.getSpu().getAttributeList());
-
         // 调用聚合根方法
         spu.updateSpu(
                 command.getSpu().getName(),
                 command.getSpu().getIntro(),
-                brandId,
-                categoryPath,
+                new BrandId(command.getSpu().getBrandId()),
+                new CategoryPath(command.getSpu().getCategoryOneId(), command.getSpu().getCategoryTwoId(), command.getSpu().getCategoryThreeId()),
                 command.getSpu().getAfterSalesService(),
-                content,
-                attributeList
+                new Content(command.getSpu().getContent()),
+                new AttributeList(command.getSpu().getAttributeList())
         );
 
         spuRepository.save(spu);

@@ -14,7 +14,7 @@ import java.util.List;
 public class SkuAttributeQueryAppService {
 
     private final SkuAttributeRepository repository;
-    private final SkuAttributeDtoConverter converter = SkuAttributeDtoConverter.INSTANCE;
+    private final SkuAttributeDtoConverter converter;
 
     public List<SkuAttributeDto> listSkuAttributes() {
         return repository.listAll().stream()

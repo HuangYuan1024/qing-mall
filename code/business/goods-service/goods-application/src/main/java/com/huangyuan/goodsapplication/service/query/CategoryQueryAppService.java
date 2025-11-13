@@ -14,7 +14,7 @@ import java.util.List;
 public class CategoryQueryAppService {
 
     private final CategoryRepository repository;
-    private final CategoryDtoConverter converter = CategoryDtoConverter.INSTANCE;
+    private final CategoryDtoConverter converter;
 
     public List<CategoryDto> listCategoriesByParentId(Integer parentId) {
         return repository.listByParentId(parentId).stream()

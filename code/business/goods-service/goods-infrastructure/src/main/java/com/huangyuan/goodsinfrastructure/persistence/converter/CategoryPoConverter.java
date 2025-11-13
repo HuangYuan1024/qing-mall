@@ -1,19 +1,30 @@
 package com.huangyuan.goodsinfrastructure.persistence.converter;
 
 import com.huangyuan.goodsdomain.aggregate.Category;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
 import com.huangyuan.goodsinfrastructure.persistence.po.CategoryPo;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import lombok.NoArgsConstructor;
 
-@Mapper
-public interface CategoryPoConverter {
+@NoArgsConstructor
+public final class CategoryPoConverter {
 
-    CategoryPoConverter INSTANCE = Mappers.getMapper(CategoryPoConverter.class);
+    public Category toDomain(CategoryPo po) {
+        if (po == null) return null;
+        return new Category(
+            new CategoryId(po.getId()),
+            po.getName(),
+            po.getSort(),
+            po.getParentId()
+        );
+    }
 
-    @Mapping(target = "id", expression = "java(new CategoryId(po.getId()))")
-    Category toDomain(CategoryPo po);
-
-    @Mapping(target = "id", expression = "java(domain.getId().getValue())")
-    CategoryPo toPo(Category domain);
+    public CategoryPo toPo(Category domain) {
+        if (domain == null) return null;
+        return new CategoryPo(
+            domain.getId().value(),
+            domain.getName(),
+            domain.getSort(),
+            domain.getParentId()
+        );
+    }
 }

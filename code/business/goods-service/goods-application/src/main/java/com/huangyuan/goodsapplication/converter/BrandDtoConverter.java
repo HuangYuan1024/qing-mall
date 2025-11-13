@@ -1,21 +1,34 @@
 package com.huangyuan.goodsapplication.converter;
 
 import com.huangyuan.goodsapplication.dto.BrandDto;
-import com.huangyuan.goodsdomain.aggregate.Brand;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.huangyuan.goodsdomain.aggregate.*;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface BrandDtoConverter {
+@Component
+@NoArgsConstructor
+public final class BrandDtoConverter {
+    public Brand toDomain(BrandDto brandDto) {
+        if (brandDto == null) return null;
 
-    BrandDtoConverter INSTANCE = Mappers.getMapper(BrandDtoConverter.class);
+        return new Brand(
+                new BrandId(brandDto.getId()),
+                brandDto.getName(),
+                brandDto.getImage(),
+                brandDto.getInitial(),
+                brandDto.getSort()
+        );
+    }
 
-    /* Domain → DTO */
-    @Mapping(target = "id", expression = "java(brand.getId().getValue())")
-    BrandDto toDto(Brand brand);
+    public BrandDto toDto(Brand brand) {
+        if (brand == null) return null;
 
-    /* DTO → Domain */
-    @Mapping(target = "id", expression = "java(new BrandId(brandDto.getId()))")
-    Brand toDomain(BrandDto brandDto);
+        return new BrandDto(
+                brand.getId().value(),
+                brand.getName(),
+                brand.getImage(),
+                brand.getInitial(),
+                brand.getSort()
+        );
+    }
 }

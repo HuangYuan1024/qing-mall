@@ -2,16 +2,32 @@ package com.huangyuan.goodsapplication.converter;
 
 import com.huangyuan.goodsapplication.dto.CategoryDto;
 import com.huangyuan.goodsdomain.aggregate.Category;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.huangyuan.goodsdomain.aggregate.CategoryId;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface CategoryDtoConverter {
+@Component
+@NoArgsConstructor
+public final class CategoryDtoConverter {
+    public Category toDomain(CategoryDto categoryDto) {
+        if (categoryDto == null) return null;
 
-    CategoryDtoConverter INSTANCE = Mappers.getMapper(CategoryDtoConverter.class);
+        return new Category(
+            new CategoryId(categoryDto.getId()),
+            categoryDto.getName(),
+            categoryDto.getSort(),
+            categoryDto.getParentId()
+        );
+    }
 
-    @Mapping(target = "id", expression = "java(category.getId().getValue())")
-    CategoryDto toDto(Category category);
+    public CategoryDto toDto(Category category) {
+        if (category == null) return null;
 
+        return new CategoryDto(
+            category.getId().value(),
+            category.getName(),
+            category.getSort(),
+            category.getParentId()
+        );
+    }
 }
