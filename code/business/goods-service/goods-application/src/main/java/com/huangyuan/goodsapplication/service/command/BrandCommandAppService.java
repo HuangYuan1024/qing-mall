@@ -1,6 +1,5 @@
 package com.huangyuan.goodsapplication.service.command;
 
-import com.huangyuan.goodsapplication.command.UpdateBrandCommand;
 import com.huangyuan.goodsapplication.command.CreateBrandCommand;
 import com.huangyuan.goodsdomain.aggregate.Brand;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
@@ -18,12 +17,12 @@ public class BrandCommandAppService {
     private final BrandRepository repository;
 
     public void createBrand(CreateBrandCommand cmd) {
-        Brand brand = domainService.createBrand(cmd.getName(), cmd.getImage(), cmd.getInitial(), cmd.getSort());
+        Brand brand = domainService.createBrand(cmd.getName(), cmd.getImage(), cmd.getLetter(), cmd.getSort());
         repository.save(brand);
     }
 
-    public void updateBrand(UpdateBrandCommand cmd) {
-        Brand brand = domainService.updateBrand(cmd.getId(), cmd.getName(), cmd.getImage(), cmd.getInitial(), cmd.getSort());
+    public void updateBrand(Integer id, CreateBrandCommand cmd) {
+        Brand brand = domainService.updateBrand(id, cmd.getName(), cmd.getImage(), cmd.getLetter(), cmd.getSort());
         repository.save(brand);
     }
 

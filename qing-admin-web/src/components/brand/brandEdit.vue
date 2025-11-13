@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     class="dialog-block"
-    :title="infoForm.id ? '编辑品牌' : '新增品牌'"
+    :title="data.id ? '编辑品牌' : '新增品牌'"
     :visible.sync="visible"
     @open="handleShow"
     @close="onReactForm()"
@@ -11,26 +11,26 @@
   >
     <div>
       <el-form
-        :model="infoForm"
-        ref="infoForm"
+        :model="data"
+        ref="data"
         :rules="rules"
         label-width="118px"
         label-position="left"
         class="dialog-form"
       >
          <el-form-item label="商品分类：" prop="categoryName" style="width:100%;">
-              <el-input v-model="infoForm.categoryName" placeholder="必填项" size="medium" style="width:217px;" disabled="disabled"></el-input>
+              <el-input v-model="data.categoryName" placeholder="必填项" size="medium" style="width:217px;" disabled="disabled"></el-input>
               <span class="table_btn" style="margin-left:10px;" @click="changecateFn">选择分类</span>
           </el-form-item>
         <el-form-item label="品牌名称" prop="name" size="medium">
           <el-input
-            v-model="infoForm.name"
+            v-model="data.name"
             placeholder="请输入"
           ></el-input>
         </el-form-item>
         <el-form-item label="品牌首字母" prop="letter" size="medium">
           <el-input
-            v-model="infoForm.letter"
+            v-model="data.letter"
             maxlength="1"
             show-word-limit
             placeholder="请输入"
@@ -43,13 +43,13 @@
              :http-request="function(){}"
             :show-file-list="false"
             :before-upload="uploadProImg">
-            <img v-if="infoForm.image" :src="infoForm.image" class="avatar">
+            <img v-if="data.image" :src="data.image" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload> -->
           <p>只能上传jpg/png格式的图片，大小不超过2M</p>
-          <uploadImg @on-submit="onSubmit" :data-img="infoForm.image" :isBtn="false" :imgSize="2"></uploadImg>
+          <uploadImg @on-submit="onSubmit" :data-img="data.image" :isBtn="false" :imgSize="2"></uploadImg>
         </el-form-item>
-        
+
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer text-c">
@@ -61,7 +61,7 @@
       >取 消</el-button>
       <el-button type="primary" size="medium" :loading="loading" @click="onSaveData()">保 存</el-button>
     </div>
-    
+
       <categoryList @on-catedetail="getCategory" :dataIds="dataIds" :dataNames="nameList" @on-cancel="onCancel" :visible.sync="catedialogVisible" ref="cate"></categoryList>
 
   </el-dialog>
@@ -98,7 +98,7 @@ export default {
        dataIds:[],
       nameList:[],
       loading: false,
-      infoForm: {
+      data: {
         id: "",
         image: "",
         letter: "",
@@ -108,19 +108,19 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请填写品牌名称" }],
-       
+
       },
 
     };
   },
   watch: {
-    "infoForm.classIds": {
+    "data.classIds": {
       handler() {
-        if (this.infoForm.classIds && this.infoForm.classIds.length > 0) {
-          this.infoForm.rootId = this.infoForm.classIds[0] || "";
-          this.infoForm.parentId = this.infoForm.classIds[1] || "";
-          if (this.infoForm.score == 0) {
-            this.infoForm.score = "";
+        if (this.data.classIds && this.data.classIds.length > 0) {
+          this.data.rootId = this.data.classIds[0] || "";
+          this.data.parentId = this.data.classIds[1] || "";
+          if (this.data.score == 0) {
+            this.data.score = "";
           }
         }
       }
@@ -154,8 +154,8 @@ export default {
         nameList.push(arr[1])
       })
       this.nameList=nameList
-      this.infoForm.categoryName=nameList.join(',')
-      this.infoForm.categories =categories
+      this.data.categoryName=nameList.join(',')
+      this.data.categories =categories
       this.catedialogVisible = false;
     },
        uploadProImg(file) {
@@ -175,37 +175,39 @@ export default {
         return false;
       }
 
-      
+
       let fd = new FormData();
       fd.append("file", file);
       axios.post(that.$fileApi, fd).then(res => {
         if (res.data.code === "000") {
           that.$successMsg(res.data.message);
-          that.infoForm.image = res.data.imgUrl;
+          that.data.image = res.data.imgUrl;
         } else {
           that.$errMsg(res.data.message);
         }
       });
     },
     onSubmit(img){
-      this.infoForm.image=img
+      this.data.image=img
     },
     /**
      * @description 提交
      */
     onSaveData() {
-      this.$refs.infoForm.validate(valid => {
+      this.$refs.data.validate(valid => {
         if (valid) {
           this.loading = true;
           let api = "";
           let formData = {};
-          if (this.infoForm.id) {
+          console.log("data.id: ", this.data.id)
+          if (this.data.id && this.data.id > 0) {
             api = "brandEditApi";
-            
+            console.log("编辑")
           } else {
             api = "brandAddApi";
+            console.log("新增")
           }
-          formData = this.infoForm;
+          formData = this.data;
           if (formData.rootId == -2) {
             formData.score = "";
           }
@@ -215,13 +217,13 @@ export default {
               if(result.data.code=="20000"){
                 this.loading = false;
                 this.$message({
-                  message: this.infoForm.id ? "编辑成功" : "新增成功",
+                  message: this.data.id ? "编辑成功" : "新增成功",
                   type: "success"
                 });
                 this.onReactForm(true);
                 this.$refs.cate.onOpen()
               }
-              
+
             })
             .catch(err => {
               this.loading = false;
@@ -237,14 +239,14 @@ export default {
       this.$nextTick(()=>{
         if (this.data.id) {
         API.brandDetailApi(this.data).then(res => {
-          Object.keys(this.infoForm).forEach(
-            key => (this.infoForm[key] = res.data.data[key])
+          Object.keys(this.data).forEach(
+            key => (this.data[key] = res.data.data[key])
           );
-         
+
         });
       }
       })
-     
+
     },
     /**
      * @description 取消，关闭弹窗
@@ -253,12 +255,12 @@ export default {
     onReactForm(refresh = false, type) {
 
       // 重置页面数据
-      this.$data.infoForm = this.$options.data().infoForm;
+      this.$data.data = this.$options.data().data;
       // 移除校验结果
       this.$nextTick(() => {
-        this.$refs.infoForm.clearValidate();
+        this.$refs.data.clearValidate();
       });
-      
+
      this.$emit('update:visible', false);
       if (refresh) {
         this.$emit("refresh");
@@ -269,6 +271,10 @@ export default {
 </script>
 
 <style lang="scss" scpoed>
+ .el-dialog {
+    margin-top: 2% !important;
+    margin: 0 auto 2%;
+ }
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;

@@ -4,7 +4,9 @@ import com.huangyuan.goodsdomain.aggregate.Category;
 import com.huangyuan.goodsdomain.aggregate.CategoryId;
 import com.huangyuan.goodsinfrastructure.persistence.po.CategoryPo;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor
 public final class CategoryPoConverter {
 

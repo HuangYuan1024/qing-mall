@@ -37,7 +37,7 @@ export default {
     },
     //商品分类列表
     categoryListApi: (params) => {
-        return API.GET(`/category/parent/${params.id}?parentId=${params.id}`, params)
+        return API.GET(`/category/parent/${params.id}`, params)
     },
     //商品分类添加
     categoryAddApi: (params) => {
@@ -63,23 +63,23 @@ export default {
     /*-----------品牌--------*/
     //品牌管理列表
     brandListApi: (params) => {
-        return API.POST(`/brand/list/${params.page}/${params.size}`, params)
+        return API.GET(`/brand/pageBrands/${params.page}/${params.size}`, params)
     },
     //添加品牌
     brandAddApi: (params) => {
-        return API.POST(`/brand`, params)
+        return API.POST(`/brand/addBrand`, params)
     },
     //编辑品牌
     brandEditApi: (params) => {
-        return API.PUT(`/brand/${params.id}`, params)
+        return API.PUT(`/brand/updateBrand/${params.id}`, params)
     },
     //获取品牌详情
     brandDetailApi: (params) => {
-        return API.GET(`/brand/${params.id}`, params)
+        return API.GET(`/brand/getBrandById/${params.id}`, params)
     },
     //删除品牌
     brandDeleteApi: (params) => {
-        return API.DELETE(`/brand/${params.id}`, params)
+        return API.DELETE(`/brand/deleteBrand/${params.id}`, params)
     },
     /*-----------规格--------*/
     //规格列表

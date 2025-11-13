@@ -32,7 +32,7 @@
             <div>
               <thumbnails
                 :thumbnail-img="scope.row.image"
-                :thumbnail-id="scope.row.productId "
+                :thumbnail-id="scope.row.productId"
                 :img-index="imgIndex"
                 @get-index="getIndexFn"
               ></thumbnails>
@@ -48,14 +48,14 @@
         <template slot-scope="scope">
           <div>
            
-            <!-- <div class="table_btn">
+            <div class="table_btn">
               <el-button
                 size="small"
                 type="primary"
                 plain
                 @click.native="doEdit('2',scope.row)"
               >编辑</el-button>
-            </div> -->
+            </div>
             <div class="table_btn">
               <el-button size="small" type="primary" plain @click.native="doDelete(scope.row.id)">删除</el-button>
             </div>
@@ -142,7 +142,7 @@ export default {
       let that = this;
       API.brandListApi(formData)
         .then(result => {
-          console.log(result.data);
+          console.log("result: ", result.data);
           if (result.data.code == "20000") {
             this.tableData =
               (result.data.data.records &&

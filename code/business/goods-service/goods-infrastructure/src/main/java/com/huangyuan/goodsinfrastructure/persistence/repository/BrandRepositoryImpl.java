@@ -30,6 +30,7 @@ public class BrandRepositoryImpl implements BrandRepository {
     @Override
     public Brand save(Brand brand) {
         BrandPo po = converter.toPo(brand);
+        po.setSort(0);
         if (mapper.existsById(po.getId())) {
             mapper.updateById(po);
         } else {

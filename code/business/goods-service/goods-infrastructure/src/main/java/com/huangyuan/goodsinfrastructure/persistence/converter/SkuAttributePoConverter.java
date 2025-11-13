@@ -4,7 +4,9 @@ import com.huangyuan.goodsdomain.aggregate.SkuAttribute;
 import com.huangyuan.goodsdomain.aggregate.SkuAttributeId;
 import com.huangyuan.goodsinfrastructure.persistence.po.SkuAttributePo;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor
 public final class SkuAttributePoConverter {
 

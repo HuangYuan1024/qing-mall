@@ -3,7 +3,9 @@ package com.huangyuan.goodsinfrastructure.persistence.converter;
 import com.huangyuan.goodsdomain.aggregate.*;
 import com.huangyuan.goodsinfrastructure.persistence.po.SkuPo;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor
 public final class SkuPoConverter {
 

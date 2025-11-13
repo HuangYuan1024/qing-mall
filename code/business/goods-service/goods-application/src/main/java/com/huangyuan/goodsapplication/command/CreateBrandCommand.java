@@ -13,7 +13,7 @@ public class CreateBrandCommand implements Serializable {
     @NotBlank
     private String image;
     @NotBlank
-    private String initial;
+    private String letter;
     @NotNull
     private Integer sort;
 }

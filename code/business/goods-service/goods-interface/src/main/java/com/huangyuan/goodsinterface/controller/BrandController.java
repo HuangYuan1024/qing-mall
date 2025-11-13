@@ -2,7 +2,6 @@ package com.huangyuan.goodsinterface.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.command.CreateBrandCommand;
-import com.huangyuan.goodsapplication.command.UpdateBrandCommand;
 import com.huangyuan.goodsapplication.dto.BrandDto;
 import com.huangyuan.goodsapplication.service.command.BrandCommandAppService;
 import com.huangyuan.goodsapplication.service.query.BrandQueryAppService;
@@ -41,10 +40,12 @@ public class BrandController {
     }
 
     // 修改实现
-    @PutMapping("/updateBrand")
+    @PutMapping("/updateBrand/{id}")
     @Operation(summary = "修改品牌")
-    public RespResult<Void> updateBrand(@Valid @RequestBody UpdateBrandCommand cmd){
-        commandService.updateBrand(cmd);
+    public RespResult<Void> updateBrand(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody CreateBrandCommand cmd){
+        commandService.updateBrand(id, cmd);
         return RespResult.ok();
     }
 
@@ -62,12 +63,12 @@ public class BrandController {
         return RespResult.ok(queryService.listBrands(brand));
     }
 
-    @GetMapping("/pageBrands")
+    @GetMapping("/pageBrands/{page}/{size}")
     @Operation(summary = "分页查询品牌(条件查询)")
-    public RespResult<PageDTO<BrandDto>> pageBrands(@RequestParam("pageNum") Long pageNum,
-                                                    @RequestParam("pageSize") Long pageSize,
-                                                    @Valid BrandDto brand){
-        return RespResult.ok(queryService.pageBrands(pageNum, pageSize, brand));
+    public RespResult<PageDTO<BrandDto>> pageBrands(@PathVariable("page") Long page,
+                                                    @PathVariable("size") Long size,
+                                                    BrandDto brand){
+        return RespResult.ok(queryService.pageBrands(page, size, brand));
     }
 
     @GetMapping("/category/{id}")

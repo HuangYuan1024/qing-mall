@@ -15,7 +15,7 @@ public final class BrandDtoConverter {
                 new BrandId(brandDto.getId()),
                 brandDto.getName(),
                 brandDto.getImage(),
-                brandDto.getInitial(),
+                brandDto.getLetter(),
                 brandDto.getSort()
         );
     }

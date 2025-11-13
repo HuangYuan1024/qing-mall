@@ -25,10 +25,10 @@ public class CategoryController {
     /**
      * 根据父ID查询子分类
      */
-    @GetMapping("/parent/{pid}")
+    @GetMapping("/parent/{id}")
     @Operation(summary = "根据父ID查询子分类")
-    public RespResult<List<CategoryDto>> getCategoryByParentId(@PathVariable("pid") Integer pid) {
-        List<CategoryDto> categories = queryService.listCategoriesByParentId(pid);
+    public RespResult<List<CategoryDto>> getCategoryByParentId(@PathVariable("id") Integer id) {
+        List<CategoryDto> categories = queryService.listCategoriesByParentId(id);
         return RespResult.ok(categories);
     }
 

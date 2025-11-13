@@ -16,8 +16,9 @@ public class Brand {
     private String initial;
     private Integer sort;
 
+
     public static Brand create(String name, String image, String initial, Integer sort) {
-        return new Brand(null, name, image, initial, sort);
+        return new Brand(new BrandId(null), name, image, initial, sort);
     }
 
     public static Brand update(BrandId id, String name, String image, String initial, Integer sort) {
