@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # 1. 基础镜像
 FROM qing/base:1.0.0
 
