@@ -101,6 +101,7 @@ export default {
       }
     }
   },
+  // 弹窗打开
   mounted() {
   },
   methods: {
@@ -137,13 +138,14 @@ export default {
       var type = file.type;
       var size = file.size;
       const isJPG =
-        type === "image/jpeg" || type === "image/png" || type === "image/gif";
+        type === "image/jpeg" || type === "image/png" || type === "image/gif" || type === "image/webp" || type === "image/svg+xml";
       const isLt2M = size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error("上传图片必须是JPG/GIF/PNG 格式");
+        this.$message.error("上传图片必须是JPG/GIF/PNG/WebP/SVG 格式");
         return false;
       }
+
       if (!isLt2M) {
         this.$message.error("单张图片大小不应超过2M");
         return false;
@@ -203,7 +205,7 @@ export default {
                   message: this.data.id ? "编辑成功" : "新增成功",
                   type: "success"
                 });
-                this.onReactForm(true);
+                this.onReactForm(true, 'click');
                 this.$refs.cate.onOpen()
               }
 
@@ -225,20 +227,24 @@ export default {
             Object.keys(this.data).forEach(
               key => (this.data[key] = res.data.data[key])
             );
-
           });
+          this.img.image = this.data.image ? this.data.image : ""
         }
       })
-
     },
     /**
      * @description 取消，关闭弹窗
      * @param {boolean} refresh 列表页是否重新请求
      */
     onReactForm(refresh = false, type) {
-
+      console.log("onReactForm")
       // 重置页面数据
       this.$data.data = this.$options.data().data;
+      FileAPI.downloadImgApi({ key: this.data.image }).then(res => {
+        console.log("下载图片: ", res.data)
+        this.data.image = res.data.url
+      })
+      this.img.image = "";
       // 移除校验结果
       this.$nextTick(() => {
         this.$refs.data.clearValidate();
@@ -246,6 +252,7 @@ export default {
 
       this.$emit('update:visible', false);
       if (refresh) {
+        console.log("刷新列表")
         this.$emit("refresh");
       }
     }

@@ -18,43 +18,29 @@
     <div class="table_btnbox">
       <el-button size="medium" type="warning" @click="doEdit('1')">添加品牌</el-button>
     </div>
-    <el-table
-      class="tablebox"
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
-    >
+    <el-table class="tablebox" ref="multipleTable" :data="tableData" tooltip-effect="dark">
       <el-table-column min-width="30%" type="selection"></el-table-column>
       <el-table-column prop="id" label="编号" min-width="80"></el-table-column>
       <el-table-column min-width="60" prop="image" label="logo">
         <template slot-scope="scope">
           <div>
             <div>
-              <thumbnails
-                :thumbnail-img="scope.row.image"
-                :thumbnail-id="scope.row.productId"
-                :img-index="imgIndex"
-                @get-index="getIndexFn"
-              ></thumbnails>
-              <p style="margin-top:5px;">{{scope.row.storeName}}</p>
+              <thumbnails :thumbnail-img="scope.row.image" :thumbnail-id="scope.row.productId" :img-index="imgIndex"
+                @get-index="getIndexFn"></thumbnails>
+              <p style="margin-top:5px;">{{ scope.row.storeName }}</p>
             </div>
           </div>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="品牌名称" min-width="120"></el-table-column>
-     
+
 
       <el-table-column label="操作" min-width="120">
         <template slot-scope="scope">
           <div>
-           
+
             <div class="table_btn">
-              <el-button
-                size="small"
-                type="primary"
-                plain
-                @click.native="doEdit('2',scope.row)"
-              >编辑</el-button>
+              <el-button size="small" type="primary" plain @click.native="doEdit('2', scope.row)">编辑</el-button>
             </div>
             <div class="table_btn">
               <el-button size="small" type="primary" plain @click.native="doDelete(scope.row.id)">删除</el-button>
@@ -63,17 +49,11 @@
         </template>
       </el-table-column>
     </el-table>
-   
+
     <div class="block page">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage1"
-        :page-sizes="pageSizes"
-        :page-size="pageSize"
-        :layout="pageLayout"
-        :total="totalNum"
-      ></el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page.sync="currentPage1" :page-sizes="pageSizes" :page-size="pageSize" :layout="pageLayout"
+        :total="totalNum"></el-pagination>
     </div>
     <brandEdit @refresh="onSubmit" :visible.sync="visibleDialog" :data="data"></brandEdit>
   </div>
@@ -85,6 +65,7 @@ import thumbnails from "@/components/global/thumbnails";
 import brandEdit from "./brandEdit";
 import Pl from "@/api/api_public";
 import API from "@/api/api_basic";
+import FileAPI from "@/api/api_file";
 export default {
   components: {
     thumbnails: thumbnails, //缩略图板块
@@ -123,12 +104,12 @@ export default {
         name: "",
         status: "1"
       },
-      data:{},
+      data: {},
     };
   },
-  created: function() {
+  created: function () {
     let that = this;
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       var formData = this.searchForm;
       this.postData(formData);
     });
@@ -151,6 +132,10 @@ export default {
                   item.isMarketable == "1"
                     ? (item.isMarketable = true)
                     : (item.isMarketable = false);
+                  FileAPI.downloadImgApi({ key: item.image.split(",")[0] }).then(res => {
+                    console.log("下载图片: ", res.data)
+                    item.image = res.data.url
+                  })
                   return item;
                 })) ||
               [];
@@ -159,7 +144,7 @@ export default {
             that.$errMsg(result.data.message);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           that.$serverErrMsg();
         });
     },
@@ -186,12 +171,12 @@ export default {
     /**
      * @description 编辑
      */
-    doEdit(type,row={}) {
-      this.data=row
+    doEdit(type, row = {}) {
+      this.data = row
       this.visibleDialog = true;
       console.log(this.data)
     },
-   
+
     /**
      * @description 删除
      */
@@ -217,7 +202,7 @@ export default {
                 that.$errMsg(result.data.message, "删除失败");
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               that.$serverErrMsg();
             });
         })
@@ -253,8 +238,8 @@ export default {
       var formData = this.searchForm;
       this.postData(formData);
     },
-    
-    
+
+
   }
 };
 </script>
