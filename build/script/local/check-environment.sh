@@ -44,5 +44,13 @@ else
     echo "⚠️  goods-service jar包不存在，请先构建项目"
 fi
 
+# 检查file-service jar包
+JAR_FILE="../../../code/business/file-service/file-boot/target/*.jar"
+if ls $JAR_FILE 1> /dev/null 2>&1; then
+    echo "✅ file-service jar包存在"
+else
+    echo "⚠️  file-service jar包不存在，请先构建项目"
+fi
+
 echo ""
 echo "📋 环境检查完成！"

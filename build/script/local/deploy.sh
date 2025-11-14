@@ -31,6 +31,7 @@ echo "构建基础镜像..."
 # 清除旧service镜像（强制）
 echo "清除旧service镜像..."
 #docker image rm -f qing/goods-service:latest || true
+#docker image rm -f qing/file-service:latest || true
 
 # 构建所有服务
 echo "🔨 构建所有服务..."
@@ -120,8 +121,19 @@ else
     fi
 fi
 
+# register-nginx-to-nacos.sh
+IP=$(docker inspect qing_cache -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
+curl -s -X POST "http://localhost:8848/nacos/v1/ns/instance" \
+  -d "serviceName=cache" \
+  -d "ip=$IP" \
+  -d "port=9080" \
+  -d "namespaceId=higress-system" \
+  -d "healthy=true" \
+  -d "ephemeral=true"
+echo "Nginx(cache)被注册到Nacos: $IP:9080"
+
 # 安装 Higress
-#./higress-install.sh
+./higress-install.sh
 
 # 检查服务状态
 echo "🔍 检查服务状态..."

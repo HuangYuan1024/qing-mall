@@ -28,7 +28,7 @@ echo "Higress 安装目录: $HIGRESS_INSTALL_DIR"
 
 # 由于官方脚本会创建自己的容器，我们需要调整网络配置
 echo "🌐 配置网络连接..."
-sleep 15
+sleep 5
 
 echo "当前网络列表:"
 docker network ls | grep app

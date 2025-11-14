@@ -1,7 +1,5 @@
 # build/scripts/local/docker-compose.yml
 
-version: "3.8"
-
 services:
   # MySQL 数据库服务
   mysql:
@@ -162,7 +160,7 @@ services:
       nacos:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -171,11 +169,74 @@ services:
         aliases:
           - goods-service
 
+  # File Service 业务服务
+  file-service:
+    build:
+      context: ../../../  # 指向项目根目录
+      dockerfile: build/docker/service/file-service/Dockerfile
+    image: qing/file-service:latest
+    container_name: qing_file_service
+    restart: unless-stopped
+    ports: []
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_goods?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: redis123
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      NACOS_SERVER_ADDR: nacos:8848
+      NACOS_USERNAME: nacos
+      NACOS_PASSWORD: nacos
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      app-network:
+        aliases:
+          - file-service
+
+  # Nginx 纯缓存，不抢 80/443/8080
+  cache:
+    image: nginx:1.27-alpine
+    container_name: qing_cache
+    restart: unless-stopped
+    volumes:
+      - ../../docker/nginx/nginx-cache.conf:/etc/nginx/nginx.conf:ro
+      - cache_data:/var/cache/nginx
+    ports: []                 # ← 不映射宿主机端口
+    expose:
+      - "9080"                # 仅对 app-network 可见
+    depends_on:
+      - goods-service
+      - file-service
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      app-network:
+        aliases:
+          - cache
+
 volumes:
   mysql_data:
   nacos_data:
   redis_data:
   minio_data:
+  cache_data:
 
 networks:
   app-network:
