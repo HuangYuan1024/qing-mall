@@ -1,68 +1,39 @@
 <template>
-  <el-dialog
-    class="dialog-block"
-    :title="data.id ? '编辑品牌' : '新增品牌'"
-    :visible.sync="visible"
-    @open="handleShow"
-    @close="onReactForm()"
-    width="640px"
-    :close-on-click-modal="false"
-    :append-to-body="true"
-  >
+  <el-dialog class="dialog-block" :title="data.id ? '编辑品牌' : '新增品牌'" :visible.sync="visible" @open="handleShow"
+    @close="onReactForm()" width="640px" :close-on-click-modal="false" :append-to-body="true">
     <div>
-      <el-form
-        :model="data"
-        ref="data"
-        :rules="rules"
-        label-width="118px"
-        label-position="left"
-        class="dialog-form"
-      >
-         <el-form-item label="商品分类：" prop="categoryName" style="width:100%;">
-              <el-input v-model="data.categoryName" placeholder="必填项" size="medium" style="width:217px;" disabled="disabled"></el-input>
-              <span class="table_btn" style="margin-left:10px;" @click="changecateFn">选择分类</span>
-          </el-form-item>
+      <el-form :model="data" ref="data" :rules="rules" label-width="118px" label-position="left" class="dialog-form">
+        <el-form-item label="商品分类：" prop="categoryName" style="width:100%;">
+          <el-input v-model="data.categoryName" placeholder="必填项" size="medium" style="width:217px;"
+            disabled="disabled"></el-input>
+          <span class="table_btn" style="margin-left:10px;" @click="changecateFn">选择分类</span>
+        </el-form-item>
         <el-form-item label="品牌名称" prop="name" size="medium">
-          <el-input
-            v-model="data.name"
-            placeholder="请输入"
-          ></el-input>
+          <el-input v-model="data.name" placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="品牌首字母" prop="letter" size="medium">
-          <el-input
-            v-model="data.letter"
-            maxlength="1"
-            show-word-limit
-            placeholder="请输入"
-          ></el-input>
+          <el-input v-model="data.letter" maxlength="1" show-word-limit placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="品牌logo" prop="instruction" style="margin-bottom:16px">
-            <!-- <el-upload
-            class="avatar-uploader"
-            action=""
-             :http-request="function(){}"
-            :show-file-list="false"
+          <el-upload class="avatar-uploader" action="" :http-request="function () { }" :show-file-list="false"
             :before-upload="uploadProImg">
-            <img v-if="data.image" :src="data.image" class="avatar">
+            <img v-if="img.image" :src="img.image" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload> -->
+          </el-upload>
           <p>只能上传jpg/png格式的图片，大小不超过2M</p>
-          <uploadImg @on-submit="onSubmit" :data-img="data.image" :isBtn="false" :imgSize="2"></uploadImg>
+          <!-- <uploadImg @on-submit="onSubmit" :data-img="data.image" :isBtn="false" :imgSize="2"></uploadImg> -->
         </el-form-item>
 
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer text-c">
-      <el-button
-        type="button"
-        size="medium"
-        @click="onReactForm(false,'click')"
-        style="background:#fafafa;"
-      >取 消</el-button>
+      <el-button type="button" size="medium" @click="onReactForm(false, 'click')" style="background:#fafafa;">取
+        消</el-button>
       <el-button type="primary" size="medium" :loading="loading" @click="onSaveData()">保 存</el-button>
     </div>
 
-      <categoryList @on-catedetail="getCategory" :dataIds="dataIds" :dataNames="nameList" @on-cancel="onCancel" :visible.sync="catedialogVisible" ref="cate"></categoryList>
+    <categoryList @on-catedetail="getCategory" :dataIds="dataIds" :dataNames="nameList" @on-cancel="onCancel"
+      :visible.sync="catedialogVisible" ref="cate"></categoryList>
 
   </el-dialog>
 </template>
@@ -70,19 +41,20 @@
 <script>
 import axios from 'axios'
 import API from "@/api/api_basic";
+import FileAPI from "@/api/api_file";
 import uploadImg from "@/components/global/uploadImg";
 import categoryList from "@/components/global/categoryCheckbox";
 
 export default {
-  components:{
+  components: {
     uploadImg,
     categoryList
   },
-  props:{
-    visible:Boolean,
-    data:{
-      type:Object,
-      default:()=>{}
+  props: {
+    visible: Boolean,
+    data: {
+      type: Object,
+      default: () => { }
     }
   },
   data() {
@@ -94,9 +66,9 @@ export default {
       }
     };
     return {
-       catedialogVisible: false,
-       dataIds:[],
-      nameList:[],
+      catedialogVisible: false,
+      dataIds: [],
+      nameList: [],
       loading: false,
       data: {
         id: "",
@@ -104,7 +76,10 @@ export default {
         letter: "",
         name: "",
         seq: null,
-        categories:[],
+        categories: [],
+      },
+      img: {
+        image: ""
       },
       rules: {
         name: [{ required: true, message: "请填写品牌名称" }],
@@ -129,9 +104,9 @@ export default {
   mounted() {
   },
   methods: {
-        /**
-     * @description 选择分类 取消
-     */
+    /**
+ * @description 选择分类 取消
+ */
     onCancel() {
       this.catedialogVisible = false;
     },
@@ -146,20 +121,19 @@ export default {
      * @description 选择分类 获取参数
      */
     getCategory(idsList) {
-      let categories=[]
-      let nameList=[]
-      idsList.forEach((item)=>{
-        let arr=item.split('&*$%#&')
-        categories.push({id:arr[0]})
+      let categories = []
+      let nameList = []
+      idsList.forEach((item) => {
+        let arr = item.split('&*$%#&')
+        categories.push({ id: arr[0] })
         nameList.push(arr[1])
       })
-      this.nameList=nameList
-      this.data.categoryName=nameList.join(',')
-      this.data.categories =categories
+      this.nameList = nameList
+      this.data.categoryName = nameList.join(',')
+      this.data.categories = categories
       this.catedialogVisible = false;
     },
-       uploadProImg(file) {
-      var that = this;
+    uploadProImg(file) {
       var type = file.type;
       var size = file.size;
       const isJPG =
@@ -167,7 +141,7 @@ export default {
       const isLt2M = size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP 格式");
+        this.$message.error("上传图片必须是JPG/GIF/PNG 格式");
         return false;
       }
       if (!isLt2M) {
@@ -175,20 +149,29 @@ export default {
         return false;
       }
 
-
-      let fd = new FormData();
-      fd.append("file", file);
-      axios.post(that.$fileApi, fd).then(res => {
-        if (res.data.code === "000") {
-          that.$successMsg(res.data.message);
-          that.data.image = res.data.imgUrl;
-        } else {
-          that.$errMsg(res.data.message);
-        }
+      // 加 async 回调，② 用 Promise 链
+      const ext = file.name.split('.').pop();
+      FileAPI.uploadImgApi({ ext, minutes: 10 }).then(res => {
+        const { url, key } = res.data;
+        console.log(res.data)
+        return axios.put(url, file, { headers: { 'Content-Type': file.type } })
+          .then(() => {
+            // 记录key
+            this.data.image = key;
+            this.$message.success('上传成功: ' + key);
+            FileAPI.downloadImgApi({ key }).then(res => {
+              console.log("下载图片: ", res.data)
+              this.img.image = res.data.url
+            })
+          });
+      }).catch(e => {
+        this.$message.error('上传失败: ' + e.message);
       });
+      return false; // 阻止 el-upload 默认上传
     },
-    onSubmit(img){
-      this.data.image=img
+
+    onSubmit(img) {
+      this.data.image = img
     },
     /**
      * @description 提交
@@ -214,7 +197,7 @@ export default {
           formData.state ? (formData.state = 1) : (formData.state = 2);
           API[api](formData)
             .then(result => {
-              if(result.data.code=="20000"){
+              if (result.data.code == "20000") {
                 this.loading = false;
                 this.$message({
                   message: this.data.id ? "编辑成功" : "新增成功",
@@ -236,15 +219,15 @@ export default {
      * @param {object} data
      */
     handleShow() {
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         if (this.data.id) {
-        API.brandDetailApi(this.data).then(res => {
-          Object.keys(this.data).forEach(
-            key => (this.data[key] = res.data.data[key])
-          );
+          API.brandDetailApi(this.data).then(res => {
+            Object.keys(this.data).forEach(
+              key => (this.data[key] = res.data.data[key])
+            );
 
-        });
-      }
+          });
+        }
       })
 
     },
@@ -261,7 +244,7 @@ export default {
         this.$refs.data.clearValidate();
       });
 
-     this.$emit('update:visible', false);
+      this.$emit('update:visible', false);
       if (refresh) {
         this.$emit("refresh");
       }
@@ -271,31 +254,35 @@ export default {
 </script>
 
 <style lang="scss" scpoed>
- .el-dialog {
-    margin-top: 2% !important;
-    margin: 0 auto 2%;
- }
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.el-dialog {
+  margin-top: 2% !important;
+  margin: 0 auto 2%;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>

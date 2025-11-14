@@ -8,10 +8,10 @@ import com.huangyuan.goodsdomain.aggregate.Brand;
 import com.huangyuan.goodsdomain.aggregate.BrandId;
 import com.huangyuan.goodsdomain.repository.BrandRepository;
 import com.huangyuan.qingcommon.exception.BizException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 

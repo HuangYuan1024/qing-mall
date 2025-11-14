@@ -1,12 +1,11 @@
 package com.huangyuan.filedomain.service;
 
-import com.huangyuan.filedomain.aggregate.Media;
 import com.huangyuan.filedomain.repository.MediaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
@@ -14,26 +13,18 @@ public class MediaDomainService {
 
     private final MediaRepository repository;
 
-    public Media uploadImage(MultipartFile file){
-        String bucket = "image";
-        String key  = (String) generateKey(file.getOriginalFilename());
-
-        String url;
-        try {
-            url = repository.upload(bucket, key, file.getInputStream(), file.getSize(), file.getContentType());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Media.create(bucket, key, file.getSize(),
-                file.getContentType(), url);
-    }
-
     public String generateKey(String s) {
-        return s;
+        LocalDateTime now = LocalDateTime.now();
+        Random random = new Random();
+        int i = random.nextInt(1000000);
+        return now.toString() + i + s;
     }
 
-    public String generatePresignedUrl(String image, String key, int i) {
-        return repository.generatePresignedUrl(image, key, i);
+    public String generatePresignedGetUrl(String image, String key, int i) {
+        return repository.generatePresignedGetUrl(image, key, i);
+    }
+
+    public String generatePresignedPutUrl(String image, String key, int i) {
+        return repository.generatePresignedPutUrl(image, key, i);
     }
 }

@@ -45,7 +45,7 @@ public class MediaRepositoryImpl implements MediaRepository {
     }
 
     @Override
-    public String generatePresignedUrl(String bucket, String key, int minutes) {
+    public String generatePresignedGetUrl(String bucket, String key, int minutes) {
         try {
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
@@ -54,6 +54,22 @@ public class MediaRepositoryImpl implements MediaRepository {
                             .object(key)
                             .expiry(minutes, TimeUnit.MINUTES)
                             .build());
+        } catch (Exception e) {
+            throw new BizException("FILE_PRESIGN_FAILED", e.getMessage());
+        }
+    }
+
+    @Override
+    public String generatePresignedPutUrl(String bucket, String key, int minutes) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.PUT)          // 关键区别
+                            .bucket(bucket)
+                            .object(key)
+                            .expiry(minutes, TimeUnit.MINUTES)
+                            .build())
+                    .trim();
         } catch (Exception e) {
             throw new BizException("FILE_PRESIGN_FAILED", e.getMessage());
         }

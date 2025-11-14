@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MinioConfig {
 
-    private final String endpoint = "http://host.docker.internal:9000";
+    private final String endpoint = "http://localhost:9000";
     private final String accessKey = "minio";
     private final String secretKey = "minio123";
     private final String region = "us-east-1";
