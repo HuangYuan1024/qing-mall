@@ -72,6 +72,25 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- 分布式锁 -->
+        <dependency>
+            <groupId>com.huangyuan</groupId>
+            <artifactId>qing-spring-boot-starter-lock</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 序列化用 Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.huangyuan</groupId>
             <artifactId>goods-domain</artifactId>

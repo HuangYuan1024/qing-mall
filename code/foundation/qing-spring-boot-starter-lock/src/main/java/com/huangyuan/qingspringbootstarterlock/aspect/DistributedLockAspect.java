@@ -1,6 +1,9 @@
 package com.huangyuan.qingspringbootstarterlock.aspect;
 
 import com.huangyuan.qingspringbootstarterlock.annotation.DistributedLock;
+import com.huangyuan.qingspringbootstarterlock.parser.SpelParser;
+import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,15 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 @Aspect
 @Component
+@AllArgsConstructor
 public class DistributedLockAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributedLockAspect.class);
 
+    @Resource
     private final RedissonClient redissonClient;
-
-    public DistributedLockAspect(RedissonClient client) {
-        this.redissonClient = client;
-    }
 
     @Pointcut("@annotation(com.huangyuan.qingspringbootstarterlock.annotation.DistributedLock)")
     public void distributedLockPointcut() {
@@ -45,7 +46,7 @@ public class DistributedLockAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         DistributedLock distributedLock = signature.getMethod().getAnnotation(DistributedLock.class);
 
-        String lockKey = distributedLock.value();
+        String lockKey = SpelParser.parse(distributedLock.key(), joinPoint);
         long waitTime = distributedLock.waitTime();
         long leaseTime = distributedLock.leaseTime();
         TimeUnit timeUnit = distributedLock.timeUnit();
@@ -55,27 +56,27 @@ public class DistributedLockAspect {
         try {
             boolean isLocked = lock.tryLock(waitTime, leaseTime, timeUnit);
             if (!isLocked) {
-                logger.warn("Failed to acquire distributed lock for key: {}", lockKey);
-                throw new RuntimeException("Failed to acquire distributed lock");
+                logger.warn("获取分布式锁失败，key: {}", lockKey);
+                throw new RuntimeException("获取分布式锁失败");
             }
 
-            logger.info("Successfully acquired distributed lock for key: {}", lockKey);
+            logger.info("成功获取分布式锁，key: {}", lockKey);
 
             // 执行目标方法
             return joinPoint.proceed();
 
         } catch (InterruptedException e) {
-            logger.error("Thread interrupted while acquiring lock for key: {}", lockKey, e);
+            logger.error("获取锁时线程被中断，key: {}", lockKey, e);
             Thread.currentThread().interrupt();
             throw e;
         } catch (Exception e) {
-            logger.error("Error occurred during method execution with lock for key: {}", lockKey, e);
+            logger.error("执行带锁方法时发生错误，key: {}", lockKey, e);
             throw e;
         } finally {
             // 释放锁
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
-                logger.info("Successfully released distributed lock for key: {}", lockKey);
+                logger.info("成功释放分布式锁，key: {}", lockKey);
             }
         }
     }
