@@ -225,7 +225,6 @@ services:
       - ./volumes/gateway/podinfo:/etc/istio/pod:ro
       - ./volumes/gateway/istio/data:/var/lib/istio/data:rw
       - ./volumes/gateway/log:/var/log/proxy:rw
-
   console:
     hostname: higress-console
     image: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/console:${HIGRESS_CONSOLE_TAG}

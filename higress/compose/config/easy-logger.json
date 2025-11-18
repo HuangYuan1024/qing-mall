@@ -1,0 +1,19 @@
+{
+  "apiVersion": "extensions.higress.io/v1alpha1",
+  "kind": "WasmPlugin",
+  "metadata": { "name": "easy-logger", "namespace": "higress-system" },
+  "spec": {
+    "priority": 300,
+    "matchRules": [
+      {
+        "domain": ["foo.com"],
+        "config": {
+          "request": true,
+          "response": true,
+          "responseStatusCodes": "200,500,502,503"
+        }
+      }
+    ],
+    "url": "oci://docker.io/huangyuan1024/easy-logger:1.0.0"
+  }
+}

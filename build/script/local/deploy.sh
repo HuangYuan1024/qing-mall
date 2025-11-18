@@ -121,7 +121,7 @@ else
     fi
 fi
 
-# register-nginx-to-nacos.sh
+# 注册nginx到nacos
 IP=$(docker inspect qing_cache -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
 curl -s -X POST "http://localhost:8848/nacos/v1/ns/instance" \
   -d "serviceName=cache" \
@@ -130,7 +130,18 @@ curl -s -X POST "http://localhost:8848/nacos/v1/ns/instance" \
   -d "namespaceId=higress-system" \
   -d "healthy=true" \
   -d "ephemeral=true"
-echo "Nginx(cache)被注册到Nacos: $IP:9080"
+echo " Nginx(cache)被注册到Nacos: $IP:9080"
+
+# 注册redis到nacos
+IP=$(docker inspect qing_redis -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
+curl -s -X POST "http://localhost:8848/nacos/v1/ns/instance" \
+  -d "serviceName=redis" \
+  -d "ip=$IP" \
+  -d "port=6379" \
+  -d "namespaceId=higress-system" \
+  -d "healthy=true" \
+  -d "ephemeral=true"
+echo " Redis被注册到Nacos: $IP:6379"
 
 # 安装 Higress
 ./higress-install.sh

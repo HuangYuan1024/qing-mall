@@ -25,7 +25,6 @@ REQUIRED_FILES=(
     "../../docker/mysql/init/01-init-databases.sql"
     "../../docker/mysql/init/02-nacos-schema.sql"
     "../../docker/mysql/init/03-shop-goods.sql"
-    "../../docker/higress/config.yaml"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
