@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.command.CreateBrandCommand;
 import com.huangyuan.goodsapplication.dto.BrandDto;
 import com.huangyuan.goodsapplication.service.command.BrandCommandAppService;
-import com.huangyuan.goodsapplication.service.query.BrandQueryAppService;
+import com.huangyuan.goodsapplication.service.query.impl.BrandQueryAppServiceImpl;
 import com.huangyuan.qingcommon.result.RespResult;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import java.util.List;
 public class BrandController {
 
     private final BrandCommandAppService commandService;
-    private final BrandQueryAppService queryService;
+    private final BrandQueryAppServiceImpl queryService;
 
     /**
      *  增加品牌

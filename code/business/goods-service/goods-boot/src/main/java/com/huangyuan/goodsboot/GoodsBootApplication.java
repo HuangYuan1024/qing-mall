@@ -1,5 +1,6 @@
 package com.huangyuan.goodsboot;
 
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(scanBasePackages = "com.huangyuan")
 @MapperScan("com.huangyuan.goodsinfrastructure.persistence.mapper")
+@EnableDubbo(scanBasePackages = "com.huangyuan.goodsapplication.service")
 @ComponentScan(basePackages = {"com.huangyuan.goodsboot", "com.huangyuan.goodsinterface", "com.huangyuan.goodsapplication", "com.huangyuan.goodsdomain", "com.huangyuan.goodsinfrastructure", "com.huangyuan.qingspringbootstarterweb"})
 public class GoodsBootApplication {
 

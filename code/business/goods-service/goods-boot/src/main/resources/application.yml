@@ -1,15 +1,14 @@
 server:
   port: 8081
 
+ip: localhost
+
 spring:
   application:
     name: goods-service
   cloud:
     nacos:
-      # 当service打包成docker镜像时，使用这个路径
-      server-addr: host.docker.internal:8848
-      # 当service在本地开发环境运行时，使用这个路径
-#      server-addr: localhost:8848
+      server-addr: ${ip}:8848
       discovery:
         namespace: higress-system
       config:
@@ -18,13 +17,18 @@ spring:
   config:
     import: optional:nacos:${spring.application.name}
 
+  data:
+    redis:
+      host: ${ip}
+      password: redis123
+      port: 6379
+
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/shop_goods?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${ip}:3306/shop_goods?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  # ====================MybatisPlus====================
   mybatis-plus:
     mapper-locations: classpath*:mapper/*.xml
     type-aliases-package: com.huangyuan.goodsinfrastructure.persistence.po
@@ -32,7 +36,19 @@ spring:
       map-underscore-to-camel-case: true
       log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-  #日志配置
   logging:
     pattern:
       console: "%msg%n"
+
+# Dubbo配置
+dubbo:
+  application:
+    name: dubbo-${spring.application.name}
+  registry:
+    id: nacos
+    address: nacos://${ip}:8848
+  protocol:
+    name: dubbo     #设置类型
+    port: -1      #因为dubbo的服务器端口号是不能唯一的，所以，设置为-1会帮我们自动改变端口号
+  config-center:
+    timeout: 120000  #超时时间  （毫秒）
