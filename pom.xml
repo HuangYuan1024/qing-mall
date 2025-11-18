@@ -220,6 +220,14 @@
         <module>code/business/goods-service/goods-domain</module>
         <module>code/business/goods-service/goods-infrastructure</module>
 
+        <!-- 订单服务模块 -->
+        <module>code/business/order-service/order-boot</module>
+        <module>code/business/order-service/order-interface</module>
+        <module>code/business/order-service/order-integration</module>
+        <module>code/business/order-service/order-application</module>
+        <module>code/business/order-service/order-domain</module>
+        <module>code/business/order-service/order-infrastructure</module>
+
         <!-- 文件服务模块 -->
         <module>code/business/file-service/file-boot</module>
         <module>code/business/file-service/file-interface</module>

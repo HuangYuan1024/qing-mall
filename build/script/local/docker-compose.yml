@@ -231,12 +231,45 @@ services:
         aliases:
           - cache
 
+  # Canal 数据库同步服务
+  canal-server:
+    image: canal/canal-server:v1.1.8
+    container_name: qing_canal
+    restart: unless-stopped
+    ports:
+      - "11111:11111"  # Canal 默认服务端口
+    environment:
+      # 关键配置：数据库连接
+      - canal.instance.master.address=mysql:3306
+      - canal.instance.dbUsername=canal
+      - canal.instance.dbPassword=canal
+      - canal.instance.connectionCharset=UTF-8
+      # 从库ID，确保在MySQL复制组中唯一即可[citation:1]
+      - canal.instance.mysql.slaveId=12345
+      # 配置监听的数据库和表，这里监听 shop_goods 库的所有表[citation:8]
+      - canal.instance.filter.regex=shop_goods\\..*
+      # 实例名称，后续客户端连接会用到[citation:4]
+      - canal.destinations=qing_example
+      # 服务模式，简单场景使用tcp即可[citation:1]
+      - canal.serverMode=tcp
+    volumes:
+      # 可选：持久化Canal日志，方便排查问题
+      - canal_logs:/home/admin/canal-server/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      app-network:
+        aliases:
+          - canal
+
 volumes:
   mysql_data:
   nacos_data:
   redis_data:
   minio_data:
   cache_data:
+  canal_logs:
 
 networks:
   app-network:
