@@ -85,6 +85,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Seata -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+        </dependency>
+
         <!-- 序列化用 Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

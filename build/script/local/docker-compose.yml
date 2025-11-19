@@ -78,7 +78,6 @@ services:
       - MYSQL_SERVICE_DB_NAME=nacos_config
       - MYSQL_SERVICE_USER=root
       - MYSQL_SERVICE_PASSWORD=root
-      # 修改这里：添加 allowPublicKeyRetrieval 和 useSSL 参数（MySQL8.0+版本必做）
       - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
       - NACOS_AUTH_TOKEN=ewoJIm5hbWUiOiAibG92ZV9tb3ZpZV90b2tlbiIsCgkia2V5IjogInNlY3JldF9rZXlfZm9yX2F1dGhfdG9rZW5fZW5jb2RlZF93aXRoX2Jhc2U2NCIKfQ==
       - NACOS_AUTH_IDENTITY_KEY=qing_key
@@ -87,28 +86,18 @@ services:
       - NACOS_AUTH_ADMIN_ENABLED=false
       - NACOS_AUTH_CONSOLE_ENABLED=false
       - NACOS_AUTH_CACHING_ENABLED=false
-
-      # 统一认证配置 - 完全关闭所有认证
       - NACOS_AUTH_ENABLE=false
       - NACOS_AUTH_IDENTITY_ENABLE=false
       - NACOS_AUTH_CACHE_ENABLE=false
       - NACOS_AUTH_SYSTEM_TYPE=nacos
-
-      # 兼容性配置
       - NACOS_CORE_AUTH_ENABLED=false
       - NACOS_CORE_AUTH_SERVER_IDENTITY_KEY=qing_key
       - NACOS_CORE_AUTH_SERVER_IDENTITY_VALUE=qing_value
       - NACOS_CORE_AUTH_PLUGIN_NACOS_TOKEN_SECRET_KEY=SecretKey012345678901234567890123456789
-
-      # 控制台配置
       - NACOS_CORE_AUTH_CONSOLE_ENABLED=false
       - NACOS_CORE_AUTH_ADMIN_ENABLED=false
-
-      # API 兼容性
       - NACOS_CORE_API_COMPATIBILITY_CLIENT_ENABLED=true
       - NACOS_CORE_API_COMPATIBILITY_CONSOLE_ENABLED=true
-
-      # 新增绑定地址配置
       - PREFER_HOST_MODE=hostname
       - PREFER_HOST_IP=0.0.0.0
     ports:
@@ -130,6 +119,63 @@ services:
       app-network:
         aliases:
           - nacos
+
+  # Seata 分布式事务服务
+  seata-server:
+    image: seataio/seata-server:2.0.0
+    container_name: qing_seata
+    restart: unless-stopped
+    ports:
+      - "7091:7091"  # Seata 控制台
+      - "8091:8091"  # Seata 服务端口
+    environment:
+      - SEATA_PORT=8091
+      - SEATA_IP=seata-server
+      - STORE_MODE=db
+      # 使用 Nacos 作为配置中心和注册中心
+      - SEATA_CONFIG_TYPE=nacos
+      - SEATA_CONFIG_NACOS_SERVER_ADDR=nacos:8848
+      - SEATA_CONFIG_NACOS_GROUP=SEATA_GROUP
+      - SEATA_CONFIG_NACOS_NAMESPACE=seata
+      - SEATA_CONFIG_NACOS_USERNAME=nacos
+      - SEATA_CONFIG_NACOS_PASSWORD=nacos
+      - SEATA_CONFIG_NACOS_DATA_ID=seata.properties
+
+      # 注册中心配置
+      - SEATA_REGISTRY_TYPE=nacos
+      - SEATA_REGISTRY_NACOS_SERVER_ADDR=nacos:8848
+      - SEATA_REGISTRY_NACOS_GROUP=SEATA_GROUP
+      - SEATA_REGISTRY_NACOS_NAMESPACE=seata
+      - SEATA_REGISTRY_NACOS_APPLICATION=seata-server
+      - SEATA_REGISTRY_NACOS_USERNAME=nacos
+      - SEATA_REGISTRY_NACOS_PASSWORD=nacos
+      - SEATA_REGISTRY_NACOS_CLUSTER=default
+
+      # 服务端配置
+      - SERVER_SERVICE_PORT=8091
+      - SERVER_NODE=1
+      # 设置控制台用户名和密码
+      - SEATA_CONSOLE_USER_USERNAME=seata
+      - SEATA_CONSOLE_USER_PASSWORD=seata
+      # 设置认证密钥
+      - SEATA_SECRET_KEY=123456
+    volumes:
+      - seata_data:/seata-server/resources
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7091/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      app-network:
+        aliases:
+          - seata-server
 
   # Goods Service 业务服务
   goods-service:
@@ -154,10 +200,17 @@ services:
       NACOS_SERVER_ADDR: nacos:8848
       NACOS_USERNAME: nacos
       NACOS_PASSWORD: nacos
+      # Seata 配置
+      SEATA_APPLICATION_ID: goods-service
+      SEATA_TX_SERVICE_GROUP: tx-shop
+      SEATA_SERVER_ADDR: seata-server:8091
+      SEATA_ENABLED: "true"
     depends_on:
       mysql:
         condition: service_healthy
       nacos:
+        condition: service_healthy
+      seata-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
@@ -192,10 +245,17 @@ services:
       NACOS_SERVER_ADDR: nacos:8848
       NACOS_USERNAME: nacos
       NACOS_PASSWORD: nacos
+      # Seata 配置
+      SEATA_APPLICATION_ID: file-service
+      SEATA_TX_SERVICE_GROUP: tx-shop
+      SEATA_SERVER_ADDR: seata-server:8091
+      SEATA_ENABLED: "true"
     depends_on:
       mysql:
         condition: service_healthy
       nacos:
+        condition: service_healthy
+      seata-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
@@ -207,7 +267,52 @@ services:
         aliases:
           - file-service
 
-  # Nginx 纯缓存，不抢 80/443/8080
+  # Order Service 业务服务
+  order-service:
+    build:
+      context: ../../../  # 指向项目根目录
+      dockerfile: build/docker/service/order-service/Dockerfile
+    image: qing/order-service:latest
+    container_name: qing_order_service
+    restart: unless-stopped
+    ports: []
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_order?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: redis123
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      NACOS_SERVER_ADDR: nacos:8848
+      NACOS_USERNAME: nacos
+      NACOS_PASSWORD: nacos
+      # Seata 配置
+      SEATA_APPLICATION_ID: order-service
+      SEATA_TX_SERVICE_GROUP: tx-shop
+      SEATA_SERVER_ADDR: seata-server:8091
+      SEATA_ENABLED: "true"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+      seata-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      app-network:
+        aliases:
+          - order-service
+
+  # Nginx 纯缓存
   cache:
     image: nginx:1.27-alpine
     container_name: qing_cache
@@ -215,12 +320,13 @@ services:
     volumes:
       - ../../docker/nginx/nginx-cache.conf:/etc/nginx/nginx.conf:ro
       - cache_data:/var/cache/nginx
-    ports: []                 # ← 不映射宿主机端口
+    ports: []
     expose:
-      - "9080"                # 仅对 app-network 可见
+      - "9080"
     depends_on:
       - goods-service
       - file-service
+      - order-service
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:9080/health"]
       interval: 10s
@@ -237,23 +343,17 @@ services:
     container_name: qing_canal
     restart: unless-stopped
     ports:
-      - "11111:11111"  # Canal 默认服务端口
+      - "11111:11111"
     environment:
-      # 关键配置：数据库连接
       - canal.instance.master.address=mysql:3306
       - canal.instance.dbUsername=canal
       - canal.instance.dbPassword=canal
       - canal.instance.connectionCharset=UTF-8
-      # 从库ID，确保在MySQL复制组中唯一即可[citation:1]
       - canal.instance.mysql.slaveId=12345
-      # 配置监听的数据库和表，这里监听 shop_goods 库的所有表[citation:8]
       - canal.instance.filter.regex=shop_goods\\..*
-      # 实例名称，后续客户端连接会用到[citation:4]
       - canal.destinations=qing_example
-      # 服务模式，简单场景使用tcp即可[citation:1]
       - canal.serverMode=tcp
     volumes:
-      # 可选：持久化Canal日志，方便排查问题
       - canal_logs:/home/admin/canal-server/logs
     depends_on:
       mysql:
@@ -270,6 +370,7 @@ volumes:
   minio_data:
   cache_data:
   canal_logs:
+  seata_data:
 
 networks:
   app-network:

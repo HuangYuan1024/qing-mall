@@ -2,7 +2,9 @@ package com.huangyuan.orderinterface.controller;
 
 import com.huangyuan.goodsapplication.dto.BrandDto;
 import com.huangyuan.goodsapplication.service.query.BrandQueryAppService;
+import com.huangyuan.orderapplication.service.command.OrderCommandAppService;
 import com.huangyuan.qingcommon.result.RespResult;
+import io.seata.core.context.RootContext;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,6 +30,38 @@ public class DubboTestFacade {
      */
     @DubboReference(check = false, version = "1.0.0", interfaceClass = BrandQueryAppService.class)
     private BrandQueryAppService brandQueryService;
+
+    private final OrderCommandAppService orderCommandAppService;
+
+    /**
+     * 测试Seata分布式事务
+     */
+    @GetMapping("/seata/{isRollback}")
+    @Operation(summary = "测试Seata分布式事务")
+    public Map<String, Object> testSeata(@PathVariable("isRollback") Boolean isRollback) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 记录测试开始前的时间和数据状态
+            result.put("startTime", LocalDateTime.now().toString());
+            result.put("xid", RootContext.getXID());
+
+            orderCommandAppService.createOrder(isRollback);
+
+            result.put("success", true);
+            result.put("message", "执行成功！分布式事务已提交");
+            result.put("endTime", LocalDateTime.now().toString());
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "执行失败！分布式事务已回滚");
+            result.put("error", e.getMessage());
+            result.put("endTime", LocalDateTime.now().toString());
+            result.put("xid", RootContext.getXID()); // 回滚后XID可能为null
+        }
+
+        return result;
+    }
 
     /**
      * 测试基础连通性

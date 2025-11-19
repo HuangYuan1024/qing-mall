@@ -85,6 +85,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- 分布式事务 Seata -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+            </dependency>
+
             <!-- 数据层 -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>

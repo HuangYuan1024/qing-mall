@@ -22,9 +22,14 @@ fi
 REQUIRED_FILES=(
     "docker-compose.yml"
     "../../docker/service/goods-service/Dockerfile"
+    "../../docker/service/file-service/Dockerfile"
+    "../../docker/service/order-service/Dockerfile"
     "../../docker/mysql/init/01-init-databases.sql"
     "../../docker/mysql/init/02-nacos-schema.sql"
-    "../../docker/mysql/init/03-shop-goods.sql"
+    "../../docker/mysql/init/03-seata-schema.sql"
+    "../../docker/mysql/init/04-shop-goods.sql"
+    "../../docker/mysql/init/05-shop-order.sql"
+    "../../docker/mysql/init/06-shop-user.sql"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
@@ -49,6 +54,14 @@ if ls $JAR_FILE 1> /dev/null 2>&1; then
     echo "✅ file-service jar包存在"
 else
     echo "⚠️  file-service jar包不存在，请先构建项目"
+fi
+
+# 检查order-service jar包
+JAR_FILE="../../../code/business/order-service/order-boot/target/*.jar"
+if ls $JAR_FILE 1> /dev/null 2>&1; then
+    echo "✅ order-service jar包存在"
+else
+    echo "⚠️  order-service jar包不存在，请先构建项目"
 fi
 
 echo ""

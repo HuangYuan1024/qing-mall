@@ -2,7 +2,6 @@ package com.huangyuan.goodsapplication.service.query;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.huangyuan.goodsapplication.dto.BrandDto;
-import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.List;
 

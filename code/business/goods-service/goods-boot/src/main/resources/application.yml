@@ -1,7 +1,8 @@
 server:
   port: 8081
 
-ip: localhost
+#ip: localhost
+ip: host.docker.internal
 
 spring:
   application:
@@ -52,3 +53,31 @@ dubbo:
     port: -1      #因为dubbo的服务器端口号是不能唯一的，所以，设置为-1会帮我们自动改变端口号
   config-center:
     timeout: 120000  #超时时间  （毫秒）
+
+# Seata配置
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: tx-shop  # 事务组名称，与Seata Server的配置对应
+  enable-auto-data-source-proxy: true
+  # 注册中心
+  registry:
+    type: nacos
+    nacos:
+      server-addr: ${ip}:8848
+      namespace: seata
+      group: SEATA_GROUP
+  # 配置中心
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${ip}:8848
+      namespace: seata
+      group: SEATA_GROUP
+  # 客户端配置
+  service:
+    # 虚拟组与集群的映射，这里将事务组映射到default集群
+    vgroup-mapping:
+      tx-shop: default
+    # 是否禁用全局事务
+    disable-global-transaction: false
