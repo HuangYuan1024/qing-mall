@@ -38,15 +38,20 @@ public class DubboTestFacade {
      */
     @GetMapping("/seata/{isRollback}")
     @Operation(summary = "测试Seata分布式事务")
-    public Map<String, Object> testSeata(@PathVariable("isRollback") Boolean isRollback) {
+    public Map<String, Object> testSeata(@PathVariable("isRollback") Integer isRollback) {
         Map<String, Object> result = new HashMap<>();
 
         try {
             // 记录测试开始前的时间和数据状态
             result.put("startTime", LocalDateTime.now().toString());
             result.put("xid", RootContext.getXID());
-
-            orderCommandAppService.createOrder(isRollback);
+            if (isRollback == 1) {
+                log.info("测试Seata分布式事务，回滚");
+                orderCommandAppService.createOrder(true);
+            } else {
+                log.info("测试Seata分布式事务，不回滚");
+                orderCommandAppService.createOrder(false);
+            }
 
             result.put("success", true);
             result.put("message", "执行成功！分布式事务已提交");
