@@ -123,4 +123,10 @@ public class SpuRepositoryCached implements SpuRepository {
         // 分页缓存代价高，后续可定制 Page 缓存 key
         return delegate.page(current, size);
     }
+
+    @Override
+    public void refreshGoodsCache(String goodsId) {
+        // 删除Redis缓存
+        redis.delete(PREFIX + goodsId);
+    }
 }

@@ -17,6 +17,32 @@ spring:
         namespace: higress-system
   config:
     import: optional:nacos:${spring.application.name}
+  rabbitmq:
+    host: ${ip}  # 使用统一的ip变量，对应docker容器内的rabbitmq服务
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    # 生产者配置 [citation:9]
+    publisher-confirm-type: correlated  # 生产者确认机制
+    publisher-returns: true  # 开启return机制
+    template:
+      mandatory: true  # 消息无法路由时返回给生产者
+      retry:
+        enabled: true  # 开启生产者重试
+        initial-interval: 1000ms  # 首次重试间隔
+        max-interval: 3000ms  # 最大重试间隔
+        multiplier: 1.5  # 重试间隔倍数
+    # 消费者配置 [citation:10]
+    listener:
+      simple:
+        acknowledge-mode: manual  # 手动ACK确认，确保消息可靠消费
+        prefetch: 10  # 每次预取消息数量
+        retry:
+          enabled: true  # 开启消费者重试
+          initial-interval: 2000ms  # 首次重试间隔
+          max-attempts: 3  # 最大重试次数
+          stateless: false  # 有状态重试（支持事务）
 
   data:
     redis:

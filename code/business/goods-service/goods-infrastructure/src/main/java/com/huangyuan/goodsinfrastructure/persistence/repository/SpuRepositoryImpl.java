@@ -75,4 +75,9 @@ public class SpuRepositoryImpl implements SpuRepository {
         );
         return getSpuPage(poPage);
     }
+
+    @Override
+    public void refreshGoodsCache(String goodsId) {
+
+    }
 }

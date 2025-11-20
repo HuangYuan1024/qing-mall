@@ -141,4 +141,9 @@ public class SkuRepositoryCached implements SkuRepository {
         // 可按需加缓存，现阶段直接透传
         return delegate.pageBySpuId(current, size, spuId);
     }
+
+    public void refreshGoodsCache(String id) {
+        // 删除缓存
+        redis.delete(PREFIX + id);
+    }
 }

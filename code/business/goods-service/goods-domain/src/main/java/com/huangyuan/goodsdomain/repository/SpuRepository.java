@@ -13,4 +13,6 @@ public interface SpuRepository {
     boolean existsName(String name);
     List<Spu> listAll();
     Page<Spu> page(Long current, Long size);
+
+    void refreshGoodsCache(String goodsId);
 }

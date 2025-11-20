@@ -6,7 +6,9 @@ import com.huangyuan.goodsapplication.converter.SpuDtoConverter;
 import com.huangyuan.goodsapplication.dto.SkuDto;
 import com.huangyuan.goodsapplication.dto.SpuDto;
 import com.huangyuan.goodsdomain.aggregate.*;
+import com.huangyuan.goodsdomain.event.GoodsStatusChangedEvent;
 import com.huangyuan.goodsdomain.repository.SpuRepository;
+import com.huangyuan.goodsdomain.service.DomainEventPublisher;
 import com.huangyuan.qingcommon.exception.BizException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class SpuCommandAppService {
 
     private final SpuRepository spuRepository;
     private final SpuDtoConverter converter;
+    private DomainEventPublisher eventPublisher;
 
     public SpuDto createSpu(CreateSpuCommand command) {
 
@@ -68,5 +71,29 @@ public class SpuCommandAppService {
         );
 
         spuRepository.save(spu);
+    }
+
+    @Transactional
+    public void updateGoodsStatus(String spuId, Integer statusCode) {
+        // 1. 获取商品当前状态
+        // 获取聚合根
+        Spu spu = spuRepository.find(spuId)
+                .orElseThrow(() -> new BizException("商品不存在"));
+        AuditStatus oldStatus = spu.getStatus();
+        AuditStatus newStatus = AuditStatus.of(statusCode);
+
+        // 2. 更新商品状态
+        spu.setStatus(newStatus);
+        spuRepository.save(spu);
+
+        // 3. 发布领域事件
+        if (!(oldStatus.getCode() == newStatus.getCode())) {
+            GoodsStatusChangedEvent event = new GoodsStatusChangedEvent(spuId, oldStatus, newStatus);
+            eventPublisher.publishGoodsStatusChanged(event);
+        }
+    }
+
+    public void refreshGoodsCache(String goodsId) {
+        spuRepository.refreshGoodsCache(goodsId);
     }
 }
