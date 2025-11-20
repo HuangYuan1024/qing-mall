@@ -245,6 +245,14 @@
         <module>code/business/order-service/order-domain</module>
         <module>code/business/order-service/order-infrastructure</module>
 
+        <!-- 订单服务模块 -->
+        <module>code/business/payment-service/payment-boot</module>
+        <module>code/business/payment-service/payment-interface</module>
+        <module>code/business/payment-service/payment-integration</module>
+        <module>code/business/payment-service/payment-application</module>
+        <module>code/business/payment-service/payment-domain</module>
+        <module>code/business/payment-service/payment-infrastructure</module>
+
         <!-- 文件服务模块 -->
         <module>code/business/file-service/file-boot</module>
         <module>code/business/file-service/file-interface</module>

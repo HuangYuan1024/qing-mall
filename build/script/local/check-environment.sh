@@ -21,6 +21,9 @@ fi
 # 检查必要的目录和文件
 REQUIRED_FILES=(
     "docker-compose.yml"
+    "../../docker/nginx/nginx-cache.conf"
+    "../../docker/rocketmq/broker.conf"
+    "../../docker/Dockerfile.base"
     "../../docker/service/goods-service/Dockerfile"
     "../../docker/service/file-service/Dockerfile"
     "../../docker/service/order-service/Dockerfile"

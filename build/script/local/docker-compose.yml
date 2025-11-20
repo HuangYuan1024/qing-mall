@@ -71,6 +71,61 @@ services:
         aliases:
           - rabbitmq
 
+  # RocketMQ NameServer
+  rocketmq-namesrv:
+    image: rocketmqinc/rocketmq
+    container_name: qing_rocketmq_namesrv
+    restart: unless-stopped
+    ports:
+      - "9876:9876"
+    environment:
+      - JAVA_OPT_EXT=-Xms128m -Xmx128m -Xmn128m
+    volumes:
+      - rocketmq_namesrv_logs:/home/rocketmq/logs
+      - rocketmq_namesrv_store:/home/rocketmq/store
+    networks:
+      app-network:
+        aliases:
+          - rocketmq-namesrv
+
+  # RocketMQ Broker
+  rocketmq-broker:
+    image: rocketmqinc/rocketmq
+    container_name: qing_rocketmq_broker
+    restart: unless-stopped
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+    environment:
+      - JAVA_OPT_EXT=-Xms128m -Xmx128m -Xmn128m
+      - NAMESRV_ADDR=rocketmq-namesrv:9876
+    volumes:
+      - rocketmq_broker_logs:/home/rocketmq/logs
+      - rocketmq_broker_store:/home/rocketmq/store
+      - ../../docker/rocketmq/broker.conf:/opt/rocketmq/conf/broker.conf
+    depends_on:
+      - rocketmq-namesrv
+    networks:
+      app-network:
+        aliases:
+          - rocketmq-broker
+
+  # RocketMQ 控制台
+  rocketmq-console:
+    image: styletang/rocketmq-console-ng:1.0.0
+    container_name: qing_rocketmq_console
+    restart: unless-stopped
+    ports:
+      - "8180:8080"
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=rocketmq-namesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    depends_on:
+      - rocketmq-broker
+    networks:
+      app-network:
+        aliases:
+          - rocketmq-console
+
   minio:
     image: minio/minio
     container_name: qing_minio
@@ -436,6 +491,10 @@ volumes:
   redis_data:
   rabbitmq_data:
   rabbitmq_logs:
+  rocketmq_namesrv_logs:
+  rocketmq_namesrv_store:
+  rocketmq_broker_logs:
+  rocketmq_broker_store:
   minio_data:
   cache_data:
   canal_logs:
