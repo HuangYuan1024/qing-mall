@@ -27,6 +27,10 @@
         <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
         <dubbo.version>3.2.5</dubbo.version>
 
+        <!-- 消息队列 -->
+        <rocketmq.version>4.9.6</rocketmq.version>
+        <rocketmq-spring-boot-starter.version>2.2.3</rocketmq-spring-boot-starter.version>
+
         <!-- 常用工具 -->
         <mybatis-spring-boot.version>3.0.3</mybatis-spring-boot.version>
         <pagehelper.version>2.1.1</pagehelper.version>
@@ -90,6 +94,20 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>
+            </dependency>
+
+            <!-- RocketMQ Spring Boot Starter -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- RocketMQ Client -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
 
             <!-- 数据层 -->
@@ -253,7 +271,7 @@
         <module>code/business/payment-service/payment-domain</module>
         <module>code/business/payment-service/payment-infrastructure</module>
 
-        <!-- 文件服务模块 -->
+        <!-- 支付服务模块 -->
         <module>code/business/file-service/file-boot</module>
         <module>code/business/file-service/file-interface</module>
         <module>code/business/file-service/file-integration</module>

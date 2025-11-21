@@ -33,6 +33,7 @@ echo "清除旧service镜像..."
 #docker image rm -f qing/goods-service:latest || true
 #docker image rm -f qing/file-service:latest || true
 #docker image rm -f qing/order-service:latest || true
+docker image rm -f qing/payment-service:latest || true
 
 # 构建所有服务
 echo "🔨 构建所有服务..."

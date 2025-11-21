@@ -73,46 +73,44 @@ services:
 
   # RocketMQ NameServer
   rocketmq-namesrv:
-    image: rocketmqinc/rocketmq
+    image: apache/rocketmq:4.9.6
     container_name: qing_rocketmq_namesrv
     restart: unless-stopped
     ports:
       - "9876:9876"
-    environment:
-      - JAVA_OPT_EXT=-Xms128m -Xmx128m -Xmn128m
-    volumes:
-      - rocketmq_namesrv_logs:/home/rocketmq/logs
-      - rocketmq_namesrv_store:/home/rocketmq/store
     networks:
       app-network:
         aliases:
           - rocketmq-namesrv
+    command: sh mqnamesrv
 
   # RocketMQ Broker
   rocketmq-broker:
-    image: rocketmqinc/rocketmq
+    image: apache/rocketmq:4.9.6
     container_name: qing_rocketmq_broker
+    user: root
     restart: unless-stopped
     ports:
-      - "10911:10911"
       - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
     environment:
-      - JAVA_OPT_EXT=-Xms128m -Xmx128m -Xmn128m
       - NAMESRV_ADDR=rocketmq-namesrv:9876
+      - JAVA_OPT_EXT=-Xms512m -Xmx512m -Xmn256m
     volumes:
-      - rocketmq_broker_logs:/home/rocketmq/logs
       - rocketmq_broker_store:/home/rocketmq/store
-      - ../../docker/rocketmq/broker.conf:/opt/rocketmq/conf/broker.conf
+      - ../../docker/rocketmq/broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf
     depends_on:
       - rocketmq-namesrv
     networks:
       app-network:
         aliases:
           - rocketmq-broker
+    command: sh mqbroker -c /home/rocketmq/rocketmq-4.9.6/conf/broker.conf
 
-  # RocketMQ 控制台
+  # RocketMQ 控制台 (Dashboard)
   rocketmq-console:
-    image: styletang/rocketmq-console-ng:1.0.0
+    image: apacherocketmq/rocketmq-dashboard:latest
     container_name: qing_rocketmq_console
     restart: unless-stopped
     ports:
@@ -260,129 +258,187 @@ services:
         aliases:
           - seata-server
 
-  # Goods Service 业务服务
-  goods-service:
+#  # Goods Service 业务服务
+#  goods-service:
+#    build:
+#      context: ../../../  # 指向项目根目录
+#      dockerfile: build/docker/service/goods-service/Dockerfile
+#    image: qing/goods-service:latest
+#    container_name: qing_goods_service
+#    restart: unless-stopped
+#    ports: []
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_goods?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: redis123
+#      # RabbitMQ 配置
+#      SPRING_RABBITMQ_HOST: rabbitmq
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_USERNAME: admin
+#      SPRING_RABBITMQ_PASSWORD: admin123
+#      SPRING_RABBITMQ_VIRTUAL_HOST: /
+#      SPRING_RABBITMQ_PUBLISHER_CONFIRM_TYPE: correlated
+#      SPRING_RABBITMQ_PUBLISHER_RETURNS: "true"
+#      SPRING_RABBITMQ_TEMPLATE_MANDATORY: "true"
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE: manual
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_PREFETCH: 10
+#      MINIO_ENDPOINT: http://minio:9000
+#      MINIO_ACCESS_KEY: minio
+#      MINIO_SECRET_KEY: minio123
+#      NACOS_SERVER_ADDR: nacos:8848
+#      NACOS_USERNAME: nacos
+#      NACOS_PASSWORD: nacos
+#      # Seata 配置
+#      SEATA_APPLICATION_ID: goods-service
+#      SEATA_TX_SERVICE_GROUP: tx-shop
+#      SEATA_SERVER_ADDR: seata-server:8091
+#      SEATA_ENABLED: "true"
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#      nacos:
+#        condition: service_healthy
+#      seata-server:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#    networks:
+#      app-network:
+#        aliases:
+#          - goods-service
+#
+#  # File Service 业务服务
+#  file-service:
+#    build:
+#      context: ../../../  # 指向项目根目录
+#      dockerfile: build/docker/service/file-service/Dockerfile
+#    image: qing/file-service:latest
+#    container_name: qing_file_service
+#    restart: unless-stopped
+#    ports: []
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_goods?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: redis123
+#      # RabbitMQ 配置
+#      SPRING_RABBITMQ_HOST: rabbitmq
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_USERNAME: admin
+#      SPRING_RABBITMQ_PASSWORD: admin123
+#      SPRING_RABBITMQ_VIRTUAL_HOST: /
+#      SPRING_RABBITMQ_PUBLISHER_CONFIRM_TYPE: correlated
+#      SPRING_RABBITMQ_PUBLISHER_RETURNS: "true"
+#      SPRING_RABBITMQ_TEMPLATE_MANDATORY: "true"
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE: manual
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_PREFETCH: 10
+#      MINIO_ENDPOINT: http://minio:9000
+#      MINIO_ACCESS_KEY: minio
+#      MINIO_SECRET_KEY: minio123
+#      NACOS_SERVER_ADDR: nacos:8848
+#      NACOS_USERNAME: nacos
+#      NACOS_PASSWORD: nacos
+#      # Seata 配置
+#      SEATA_APPLICATION_ID: file-service
+#      SEATA_TX_SERVICE_GROUP: tx-shop
+#      SEATA_SERVER_ADDR: seata-server:8091
+#      SEATA_ENABLED: "true"
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#      nacos:
+#        condition: service_healthy
+#      seata-server:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#    networks:
+#      app-network:
+#        aliases:
+#          - file-service
+#
+#  # Order Service 业务服务
+#  order-service:
+#    build:
+#      context: ../../../  # 指向项目根目录
+#      dockerfile: build/docker/service/order-service/Dockerfile
+#    image: qing/order-service:latest
+#    container_name: qing_order_service
+#    restart: unless-stopped
+#    ports: []
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_order?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: redis123
+#      # RabbitMQ 配置
+#      SPRING_RABBITMQ_HOST: rabbitmq
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_USERNAME: admin
+#      SPRING_RABBITMQ_PASSWORD: admin123
+#      SPRING_RABBITMQ_VIRTUAL_HOST: /
+#      SPRING_RABBITMQ_PUBLISHER_CONFIRM_TYPE: correlated
+#      SPRING_RABBITMQ_PUBLISHER_RETURNS: "true"
+#      SPRING_RABBITMQ_TEMPLATE_MANDATORY: "true"
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE: manual
+#      SPRING_RABBITMQ_LISTENER_SIMPLE_PREFETCH: 10
+#      MINIO_ENDPOINT: http://minio:9000
+#      MINIO_ACCESS_KEY: minio
+#      MINIO_SECRET_KEY: minio123
+#      NACOS_SERVER_ADDR: nacos:8848
+#      NACOS_USERNAME: nacos
+#      NACOS_PASSWORD: nacos
+#      # Seata 配置
+#      SEATA_APPLICATION_ID: order-service
+#      SEATA_TX_SERVICE_GROUP: tx-shop
+#      SEATA_SERVER_ADDR: seata-server:8091
+#      SEATA_ENABLED: "true"
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#      nacos:
+#        condition: service_healthy
+#      seata-server:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#    networks:
+#      app-network:
+#        aliases:
+#          - order-service
+  
+  # Payment Service 业务服务
+  payment-service:
     build:
       context: ../../../  # 指向项目根目录
-      dockerfile: build/docker/service/goods-service/Dockerfile
-    image: qing/goods-service:latest
-    container_name: qing_goods_service
-    restart: unless-stopped
-    ports: []
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_goods?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-      SPRING_REDIS_PASSWORD: redis123
-      # RabbitMQ 配置
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: admin
-      SPRING_RABBITMQ_PASSWORD: admin123
-      SPRING_RABBITMQ_VIRTUAL_HOST: /
-      SPRING_RABBITMQ_PUBLISHER_CONFIRM_TYPE: correlated
-      SPRING_RABBITMQ_PUBLISHER_RETURNS: "true"
-      SPRING_RABBITMQ_TEMPLATE_MANDATORY: "true"
-      SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE: manual
-      SPRING_RABBITMQ_LISTENER_SIMPLE_PREFETCH: 10
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-      NACOS_SERVER_ADDR: nacos:8848
-      NACOS_USERNAME: nacos
-      NACOS_PASSWORD: nacos
-      # Seata 配置
-      SEATA_APPLICATION_ID: goods-service
-      SEATA_TX_SERVICE_GROUP: tx-shop
-      SEATA_SERVER_ADDR: seata-server:8091
-      SEATA_ENABLED: "true"
-    depends_on:
-      mysql:
-        condition: service_healthy
-      nacos:
-        condition: service_healthy
-      seata-server:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    networks:
-      app-network:
-        aliases:
-          - goods-service
-
-  # File Service 业务服务
-  file-service:
-    build:
-      context: ../../../  # 指向项目根目录
-      dockerfile: build/docker/service/file-service/Dockerfile
-    image: qing/file-service:latest
-    container_name: qing_file_service
-    restart: unless-stopped
-    ports: []
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shop_goods?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-      SPRING_REDIS_PASSWORD: redis123
-      # RabbitMQ 配置
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: admin
-      SPRING_RABBITMQ_PASSWORD: admin123
-      SPRING_RABBITMQ_VIRTUAL_HOST: /
-      SPRING_RABBITMQ_PUBLISHER_CONFIRM_TYPE: correlated
-      SPRING_RABBITMQ_PUBLISHER_RETURNS: "true"
-      SPRING_RABBITMQ_TEMPLATE_MANDATORY: "true"
-      SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE: manual
-      SPRING_RABBITMQ_LISTENER_SIMPLE_PREFETCH: 10
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-      NACOS_SERVER_ADDR: nacos:8848
-      NACOS_USERNAME: nacos
-      NACOS_PASSWORD: nacos
-      # Seata 配置
-      SEATA_APPLICATION_ID: file-service
-      SEATA_TX_SERVICE_GROUP: tx-shop
-      SEATA_SERVER_ADDR: seata-server:8091
-      SEATA_ENABLED: "true"
-    depends_on:
-      mysql:
-        condition: service_healthy
-      nacos:
-        condition: service_healthy
-      seata-server:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    networks:
-      app-network:
-        aliases:
-          - file-service
-
-  # Order Service 业务服务
-  order-service:
-    build:
-      context: ../../../  # 指向项目根目录
-      dockerfile: build/docker/service/order-service/Dockerfile
-    image: qing/order-service:latest
-    container_name: qing_order_service
+      dockerfile: build/docker/service/payment-service/Dockerfile
+    image: qing/payment-service:latest
+    container_name: qing_payment_service
     restart: unless-stopped
     ports: []
     environment:
@@ -411,7 +467,7 @@ services:
       NACOS_USERNAME: nacos
       NACOS_PASSWORD: nacos
       # Seata 配置
-      SEATA_APPLICATION_ID: order-service
+      SEATA_APPLICATION_ID: payment-service
       SEATA_TX_SERVICE_GROUP: tx-shop
       SEATA_SERVER_ADDR: seata-server:8091
       SEATA_ENABLED: "true"
@@ -432,32 +488,32 @@ services:
     networks:
       app-network:
         aliases:
-          - order-service
-
-  # Nginx 纯缓存
-  cache:
-    image: nginx:1.27-alpine
-    container_name: qing_cache
-    restart: unless-stopped
-    volumes:
-      - ../../docker/nginx/nginx-cache.conf:/etc/nginx/nginx.conf:ro
-      - cache_data:/var/cache/nginx
-    ports: []
-    expose:
-      - "9080"
-    depends_on:
-      - goods-service
-      - file-service
-      - order-service
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9080/health"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-    networks:
-      app-network:
-        aliases:
-          - cache
+          - payment-service
+#
+#  # Nginx 纯缓存
+#  cache:
+#    image: nginx:1.27-alpine
+#    container_name: qing_cache
+#    restart: unless-stopped
+#    volumes:
+#      - ../../docker/nginx/nginx-cache.conf:/etc/nginx/nginx.conf:ro
+#      - cache_data:/var/cache/nginx
+#    ports: []
+#    expose:
+#      - "9080"
+#    depends_on:
+#      - goods-service
+#      - file-service
+#      - order-service
+#    healthcheck:
+#      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9080/health"]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 5
+#    networks:
+#      app-network:
+#        aliases:
+#          - cache
 
   # Canal 数据库同步服务
   canal-server:
@@ -491,9 +547,7 @@ volumes:
   redis_data:
   rabbitmq_data:
   rabbitmq_logs:
-  rocketmq_namesrv_logs:
   rocketmq_namesrv_store:
-  rocketmq_broker_logs:
   rocketmq_broker_store:
   minio_data:
   cache_data:

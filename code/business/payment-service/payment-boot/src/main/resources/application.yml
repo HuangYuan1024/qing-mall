@@ -1,0 +1,117 @@
+server:
+  port: 8084
+
+#ip: localhost
+ip: host.docker.internal
+
+spring:
+  application:
+    name: payment-service
+  cloud:
+    nacos:
+      server-addr: ${ip}:8848
+      discovery:
+        namespace: higress-system
+      config:
+        file-extension: yaml
+        namespace: higress-system
+  config:
+    import: optional:nacos:${spring.application.name}
+  rabbitmq:
+    host: ${ip}  # 使用统一的ip变量，对应docker容器内的rabbitmq服务
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    # 生产者配置 [citation:9]
+    publisher-confirm-type: correlated  # 生产者确认机制
+    publisher-returns: true  # 开启return机制
+    template:
+      mandatory: true  # 消息无法路由时返回给生产者
+      retry:
+        enabled: true  # 开启生产者重试
+        initial-interval: 1000ms  # 首次重试间隔
+        max-interval: 3000ms  # 最大重试间隔
+        multiplier: 1.5  # 重试间隔倍数
+    # 消费者配置 [citation:10]
+    listener:
+      simple:
+        acknowledge-mode: manual  # 手动ACK确认，确保消息可靠消费
+        prefetch: 10  # 每次预取消息数量
+        retry:
+          enabled: true  # 开启消费者重试
+          initial-interval: 2000ms  # 首次重试间隔
+          max-attempts: 3  # 最大重试次数
+          stateless: false  # 有状态重试（支持事务）
+
+  data:
+    redis:
+      host: ${ip}
+      password: redis123
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://${ip}:3306/shop_goods?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mybatis-plus:
+    mapper-locations: classpath*:mapper/*.xml
+    type-aliases-package: com.huangyuan.paymentinfrastructure.persistence.po
+    configuration:
+      map-underscore-to-camel-case: true
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  logging:
+    pattern:
+      console: "%msg%n"
+
+# Dubbo配置
+dubbo:
+  application:
+    name: dubbo-${spring.application.name}
+  registry:
+    id: nacos
+    address: nacos://${ip}:8848
+  protocol:
+    name: dubbo     #设置类型
+    port: -1      #因为dubbo的服务器端口号是不能唯一的，所以，设置为-1会帮我们自动改变端口号
+  config-center:
+    timeout: 120000  #超时时间  （毫秒）
+
+# Seata配置
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: tx-shop  # 事务组名称，与Seata Server的配置对应
+  enable-auto-data-source-proxy: true
+  # 注册中心
+  registry:
+    type: nacos
+    nacos:
+      server-addr: ${ip}:8848
+      namespace: seata
+      group: SEATA_GROUP
+  # 配置中心
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${ip}:8848
+      namespace: seata
+      group: SEATA_GROUP
+  # 客户端配置
+  service:
+    # 虚拟组与集群的映射，这里将事务组映射到default集群
+    vgroup-mapping:
+      tx-shop: default
+    # 是否禁用全局事务
+    disable-global-transaction: false
+
+# application.yml
+rocketmq:
+  name-server: ${ip}:9876
+  producer:
+    group: payment-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2
