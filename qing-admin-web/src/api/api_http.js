@@ -9,7 +9,7 @@ var locationUrl = window.location.host.split(":")[0]
 console.log(locationUrl)
 console.log(window.location.host)
     // var $Api = "http://qq/api"
-var $Api = "http://localhost:8081"
+var $Api = "http://localhost/goods"
 
 var $ImgApi = window.g.http + locationUrl + ":" + window.g.port + "/"
 

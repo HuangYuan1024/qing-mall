@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 文件服务专用实例，baseURL 指向 8082
 const fileAxios = axios.create({
-  baseURL: localStorage.getItem('$FileApi') || 'http://localhost:8082'
+  baseURL: 'http://localhost/file'
 })
 
 // 请求拦截（需要就打开）
