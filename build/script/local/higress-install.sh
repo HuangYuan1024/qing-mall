@@ -11,15 +11,15 @@ echo "Higress 安装目录: $HIGRESS_INSTALL_DIR"
 
 ## 创建安装目录
 #mkdir -p "$HIGRESS_INSTALL_DIR"
-
+#
 ## 进入安装目录执行安装命令
 #cd ../../../
-
+#
 ## 清理可能存在的旧安装
 #echo "🧹 清理可能存在的旧 Higress 安装..."
 #docker ps -a --filter "name=higress" --format "{{.Names}}" | xargs -r docker rm -f
 #docker network ls --filter "name=higress" --format "{{.Name}}" | xargs -r docker network rm 2>/dev/null || true
-
+#
 ## 执行Higress安装脚本
 #echo "执行 Higress 安装脚本..."
 ## 用宿主的Docker网络
