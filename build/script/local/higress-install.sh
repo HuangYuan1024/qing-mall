@@ -11,7 +11,7 @@ echo "Higress 安装目录: $HIGRESS_INSTALL_DIR"
 
 ## 创建安装目录
 #mkdir -p "$HIGRESS_INSTALL_DIR"
-#
+
 ## 进入安装目录执行安装命令
 #cd ../../../
 
